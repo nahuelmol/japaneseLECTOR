@@ -1,3 +1,12 @@
+function work(img){
+	console.log('in work')
+
+	var worker = Tesseract.createWorker()
+
+	worker.recognize(img).then(res => {
+		console.log('res: ',res.data)
+	})
+}
 
 function SendMessage(){
 
@@ -7,9 +16,14 @@ function SendMessage(){
 	
 	var arrayData = browser.runtime.sendMessage(REQUEST);
 	arrayData.then(response => {
-	   console.log('uri: ',response.uri)
+	   
+	   	if(response.uri !== undefined){
 
-	   document.getElementById('img').innerHTML = `<img src="`+ response.uri +`" width="230" height="150">`
+	   		var IMG = new Image()
+	   		IMG.src = response.uri
+
+	   		document.getElementById('img').appendChild(IMG)
+	   	}
 	})
 }
 
