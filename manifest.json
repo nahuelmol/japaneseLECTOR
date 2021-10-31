@@ -1,0 +1,23 @@
+{
+
+  "manifest_version": 2,
+  "name": "Devtools detector",
+  "version": "1.0",
+  "description": "This just will integrate de browset api, dev tool",
+  "permissions": [
+    "tabs",
+    "storage",
+    "notifications",
+    "activeTab",
+    "<all_urls>"
+  ],
+  "browser_action": {
+    "default_icon": "icons/border-48.png",
+    "default_title": "Go!",
+    "default_popup":"popup/popup.html"
+  },
+  "background": {
+   "scripts": ["background/index.js","background/second.js"]
+  }
+
+}
