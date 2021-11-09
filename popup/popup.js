@@ -49,18 +49,15 @@ function FrontStarter(){
 
 
 function StartAnalysis(){
+        var onResponse = res => {
+            console.log('text: ', res.text)
+        }
 
 	const worker = new Tesseract.TesseractWorker()
 
 	worker.recognize(IMG)
-	.progress(function(packet){
-	    console.log('progress')
-	})
-	.then(function(data){
-	    console.log('text: ', data.text)
-	    console.log('lines')
-	    console.log(data.lines)
-	})
+	.progress( _ => console.log('progress'))
+	.then( data => onResponse(data))
 
 }
 
