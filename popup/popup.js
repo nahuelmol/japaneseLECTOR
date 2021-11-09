@@ -1,13 +1,5 @@
 var IMG = ''
 
-const work = _ =>{
-
-	var img = document.getElementById('img_result')
-
-	console.log('in work')
-
-}
-
 function SendMessage(){
 
 	var REQUEST = {
@@ -24,7 +16,6 @@ function SendMessage(){
 	   		IMG.id = 'img_result'
 
 	   		document.getElementById('img').appendChild(IMG)
-	   		work()
 	   	}
 	})
 }
@@ -45,30 +36,26 @@ function FrontStarter(){
 	window.open('front.html')
 }
 
-
-
-
-function StartAnalysis(){
-        var onResponse = res => {
-            console.log('text: ', res.text)
-        }
+function GetMyTexts(){
 
 	const worker = new Tesseract.TesseractWorker()
 
 	worker.recognize(IMG)
-	.progress( _ => console.log('progress'))
-	.then( data => onResponse(data))
+	.progress(function(packet){
+		console.log('packet:',packet)
+	})
+	.then(function(data){
+		console.log('text: ',data.text)
+	})
 
 }
-
-
 
 if(window.location.pathname === '/popup/popup.html'){
 	document.getElementById('capt').addEventListener("click",Capture)
 	document.getElementById('front').addEventListener("click",FrontStarter)
 
 }else if(window.location.pathname === '/popup/front.html'){
-	document.getElementById('analysis').addEventListener("click",StartAnalysis)
+	document.getElementById('analysis').addEventListener("click",GetMyTexts)
 }
 
 document.getElementById('butt').addEventListener("click",SendMessage)

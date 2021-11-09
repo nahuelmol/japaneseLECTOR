@@ -6,7 +6,6 @@ const onResponse = res => {
 
 const UriAnalize = (uri,callback) => {
 	var uri_divided = uri.split(',')
-	callback(uri_divided)
 }
 
 const onCaptured = imageUri => {
@@ -15,8 +14,6 @@ const onCaptured = imageUri => {
 	GLOBAL_URI = imageUri
 
 	if(img === imageUri){
-		console.log('that is the same picture')
-
 		UriAnalize(imageUri,onResponse)
 	}else{
 		console.log('the uri changes as a result of the conversion')
