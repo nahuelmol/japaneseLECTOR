@@ -1,11 +1,11 @@
-function work(img){
+var IMG = ''
+
+const work = _ =>{
+
+	var img = document.getElementById('img_result')
+
 	console.log('in work')
 
-	var worker = Tesseract.createWorker()
-
-	worker.recognize(img).then(res => {
-		console.log('res: ',res.data)
-	})
 }
 
 function SendMessage(){
@@ -19,10 +19,12 @@ function SendMessage(){
 	   
 	   	if(response.uri !== undefined){
 
-	   		var IMG = new Image()
+	   		IMG = new Image()
 	   		IMG.src = response.uri
+	   		IMG.id = 'img_result'
 
 	   		document.getElementById('img').appendChild(IMG)
+	   		work()
 	   	}
 	})
 }
@@ -36,7 +38,40 @@ function Capture(){
 	arrayData.then(response => {
 	   console.log('msg from back: ',response.msg)
 	})
+
 } 
 
+function FrontStarter(){
+	window.open('front.html')
+}
+
+
+
+
+function StartAnalysis(){
+
+	const worker = new Tesseract.TesseractWorker()
+
+	worker.recognize(IMG)
+	.progress(function(packet){
+	    console.log('progress')
+	})
+	.then(function(data){
+	    console.log('text: ', data.text)
+	    console.log('lines')
+	    console.log(data.lines)
+	})
+
+}
+
+
+
+if(window.location.pathname === '/popup/popup.html'){
+	document.getElementById('capt').addEventListener("click",Capture)
+	document.getElementById('front').addEventListener("click",FrontStarter)
+
+}else if(window.location.pathname === '/popup/front.html'){
+	document.getElementById('analysis').addEventListener("click",StartAnalysis)
+}
+
 document.getElementById('butt').addEventListener("click",SendMessage)
-document.getElementById('capt').addEventListener("click",Capture)

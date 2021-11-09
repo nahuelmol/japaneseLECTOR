@@ -45,6 +45,7 @@ browser.runtime.onMessage.addListener(
   			var response = {
   				uri:GLOBAL_URI
   			}
+
   			sendResponse(response)
   		}
 })

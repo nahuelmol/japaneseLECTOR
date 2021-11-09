@@ -11,6 +11,7 @@
     "activeTab",
     "<all_urls>"
   ],
+  "content_security_policy": "script-src blob: 'self' https://unpkg.com ; object-src 'self';",
   "browser_action": {
     "default_icon": "icons/border-48.png",
     "default_title": "Go!",
@@ -19,5 +20,5 @@
   "background": {
    "scripts": ["background/index.js","background/second.js"]
   }
-
+  
 }
