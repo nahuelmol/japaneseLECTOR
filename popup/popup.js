@@ -42,7 +42,22 @@ function GetMyTexts(){
 
 	worker.recognize(IMG)
 	.progress(function(packet){
-		console.log('packet:',packet)
+
+		if(packet.status == "loading tesseract core"){
+			console.log("loading core")
+		}
+
+		if(packet.status == "initializing tesseract"){
+			console.log("initializing")
+		}
+
+		if(packet.status == "recognizing text"){
+			console.log("recognizing text.. in progress")
+		}
+
+		if(packet.status == "loading language traineddata"){
+			console.log("loading data")
+		}
 	})
 	.then(function(data){
 		console.log('text: ',data.text)
