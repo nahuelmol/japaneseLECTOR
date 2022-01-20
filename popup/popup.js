@@ -40,27 +40,61 @@ function GetMyTexts(){
 
 	const worker = new Tesseract.TesseractWorker()
 
+	var res = document.getElementById("result")
+
+	var percent = document.createElement("p")
+	var state   = document.createElement("p")
+
+	percent.id = "percent"
+	state.id = "state"
+	res.appendChild(percent)
+	res.appendChild(state)
+
 	worker.recognize(IMG)
 	.progress(function(packet){
 
+		var state_ele = document.getElementById("state")
+
 		if(packet.status == "loading tesseract core"){
-			console.log("loading core")
+			var msg = "loading core"
+
+			console.log(msg)
+			state_ele.innerHTML = msg
 		}
 
 		if(packet.status == "initializing tesseract"){
-			console.log("initializing")
+			var msg = "initializing"
+
+			console.log(msg)
+			state_ele.innerHTML = msg
 		}
 
 		if(packet.status == "recognizing text"){
-			console.log("recognizing text.. in progress")
+			var msg = "recognizing text.. in progress"
+			
+			console.log(msg)
+			state_ele.innerHTML = msg
+
+			var num_percent = packet.progress/100
+
+			document.getElementById("percent").innerHTML = num_percent
 		}
 
 		if(packet.status == "loading language traineddata"){
-			console.log("loading data")
+			var msg = "loading data"
+			console.log(msg)
+
+			state_ele.innerHTML = msg
 		}
 	})
 	.then(function(data){
 		console.log('text: ',data.text)
+
+		var text = document.createElement("p")
+
+		text.innerHTML = data.text
+
+		res.appendChild(text)
 	})
 
 }
