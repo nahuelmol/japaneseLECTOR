@@ -16,7 +16,18 @@ function SendMessage(){
 	   		IMG.id = 'img_result'
 
 	   		document.getElementById('img').appendChild(IMG)
-	   	}
+	   	}else if(respose.uri == 'empty'){
+			
+			var res = document.getElementById("result")
+			
+			var emp_state	= document.createElement("p")
+			emp_state.id 	= "emp";
+			
+			res.aṕpendChild(emp_state);
+			
+			emp_state.innerHTML = "the uri is empty, literally";
+			
+		}
 	})
 }
 
