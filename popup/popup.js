@@ -2,9 +2,7 @@ var IMG = ''
 
 function SendMessage(){
 
-	var REQUEST = {
-	      type: 'askURI',
-	   }
+	var REQUEST = { type: 'askURI'}
 	
 	var arrayData = browser.runtime.sendMessage(REQUEST);
 	arrayData.then(response => {
@@ -26,9 +24,24 @@ function SendMessage(){
 			res.aṕpendChild(emp_state);
 			
 			emp_state.innerHTML = "the uri is empty, literally";
-			
+
+		}else{
+			console.log('theres not URI')
 		}
 	})
+}
+
+function CleanScreen () {
+	var REQUEST = { type:'clean_screen'}
+	array = browser.runtime.sendMessage(REQUEST)
+
+	array.then(response => {
+
+	   	elemento = document.getElementById('img_result')
+	   	elemento.parentNode.removeChild(elemento)
+
+	})
+
 }
 
 function Capture(){
@@ -42,6 +55,19 @@ function Capture(){
 	})
 
 } 
+
+function CleanCapture(){
+	var REQUEST = {
+		type:'clean_capture',
+	}
+
+	var arrayData = browser.runtime.sendMessage(REQUEST);
+
+	arrayData.then(response => {
+		console.log('cleaning the capture', response.msg)
+	})
+
+}
 
 function FrontStarter(){
 	window.open('front.html')
@@ -111,11 +137,13 @@ function GetMyTexts(){
 }
 
 if(window.location.pathname === '/popup/popup.html'){
-	document.getElementById('capt').addEventListener("click",Capture)
+	document.getElementById('capt').addEventListener("click",	Capture)
+	document.getElementById('clean_cap').addEventListener("click", CleanCapture)
 	document.getElementById('front').addEventListener("click",FrontStarter)
 
 }else if(window.location.pathname === '/popup/front.html'){
 	document.getElementById('analysis').addEventListener("click",GetMyTexts)
 }
 
-document.getElementById('butt').addEventListener("click",SendMessage)
+document.getElementById('ask').addEventListener("click", SendMessage)
+document.getElementById('clean_screen').addEventListener("click", CleanScreen)

@@ -14,7 +14,7 @@ const onCaptured = imageUri => {
 	GLOBAL_URI = imageUri
 
 	if(img === imageUri){
-		UriAnalize(imageUri,onResponse)
+		UriAnalize(imageUri, onResponse)
 	}else{
 		console.log('the uri changes as a result of the conversion')
 	}
@@ -31,17 +31,22 @@ browser.runtime.onMessage.addListener(
   			var capturing = browser.tabs.captureVisibleTab()
 			capturing.then(onCaptured, onError);
 
-			var response = {
-  				msg:'capturing'
-  			}
+			var response = { msg:'capturing' }
 
 			sendResponse(response)
   		}
 
   		if(data.type == 'askURI'){
-  			var response = {
-  				uri:GLOBAL_URI
-  			}
+  			var response = { uri:GLOBAL_URI }
+
+  			sendResponse(response)
+  		}
+
+  		if(data.type == 'clean_capture'){
+
+  			GLOBAL_URI == 'empty'
+
+  			var response = { msg:'cleaning capture'}
 
   			sendResponse(response)
   		}
