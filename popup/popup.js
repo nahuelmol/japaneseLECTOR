@@ -1,6 +1,6 @@
 var IMG = ''
 
-function SendMessage(){
+function AskUri(){
 
 	var REQUEST = { type: 'askURI'}
 	
@@ -14,6 +14,7 @@ function SendMessage(){
 	   		IMG.id = 'img_result'
 
 	   		document.getElementById('img').appendChild(IMG)
+
 	   	}else if(respose.uri == 'empty'){
 			
 			var res = document.getElementById("result")
@@ -33,25 +34,19 @@ function SendMessage(){
 
 function CleanScreen () {
 	var REQUEST = { type:'clean_screen'}
-	array = browser.runtime.sendMessage(REQUEST)
 
-	array.then(response => {
+	elemento = document.getElementById('img_result')
+	elemento.parentNode.removeChild(elemento)
 
-	   	elemento = document.getElementById('img_result')
-	   	elemento.parentNode.removeChild(elemento)
-
-	})
 
 }
 
 function Capture(){
-	var REQUEST = {
-	      type: 'capture',
-	   }
+	var REQUEST = { type: 'capture' }
 	
 	var arrayData = browser.runtime.sendMessage(REQUEST);
 	arrayData.then(response => {
-	   console.log('msg from back: ',response.msg)
+	   console.log('msg from back: ', response.msg)
 	})
 
 } 
@@ -71,6 +66,33 @@ function CleanCapture(){
 
 function FrontStarter(){
 	window.open('front.html')
+}
+
+function GettingTextFetch(){
+
+
+    // Utilizando fetch para cargar el script wasm de Tesseract.js dinámicamente
+    fetch('https://unpkg.com/tesseract.js-core@2.0.0-beta.10/tesseract-core.wasm.js')
+      .then(response => response.text())
+      .then(scriptText => {
+        const blob = new Blob([scriptText], { type: 'application/javascript' });
+        const scriptURL = URL.createObjectURL(blob);
+
+        const script = document.createElement('script');
+        script.src = scriptURL;
+        script.onload = initializeTesseractWorker; // Llamar a la función después de cargar el script
+        document.body.appendChild(script);
+      })
+      .catch(error => {
+        console.error('Error al cargar el script wasm:', error);
+      });
+
+    function initializeTesseractWorker() {
+    	console.log('initializeTesseractWorker called');
+
+    }
+
+
 }
 
 function GetMyTexts(){
@@ -138,12 +160,12 @@ function GetMyTexts(){
 
 if(window.location.pathname === '/popup/popup.html'){
 	document.getElementById('capt').addEventListener("click",	Capture)
-	document.getElementById('clean_cap').addEventListener("click", CleanCapture)
+	//document.getElementById('clean_cap').addEventListener("click", CleanCapture)
 	document.getElementById('front').addEventListener("click",FrontStarter)
 
 }else if(window.location.pathname === '/popup/front.html'){
-	document.getElementById('analysis').addEventListener("click",GetMyTexts)
+	document.getElementById('analysis').addEventListener("click",GettingTextFetch)
 }
 
-document.getElementById('ask').addEventListener("click", SendMessage)
+document.getElementById('ask').addEventListener("click", AskUri)
 document.getElementById('clean_screen').addEventListener("click", CleanScreen)

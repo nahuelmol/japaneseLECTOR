@@ -28,12 +28,12 @@ browser.runtime.onMessage.addListener(
   	(data, sender, sendResponse) => {
 
   		if(data.type == 'capture'){
-  			var capturing = browser.tabs.captureVisibleTab()
-			capturing.then(onCaptured, onError);
+  			 var capturing = browser.tabs.captureVisibleTab()
+			   capturing.then(onCaptured, onError);
 
-			var response = { msg:'capturing' }
+			   var response = { msg:'capturing' }
 
-			sendResponse(response)
+			   sendResponse(response)
   		}
 
   		if(data.type == 'askURI'){
@@ -50,6 +50,11 @@ browser.runtime.onMessage.addListener(
 
   			sendResponse(response)
   		}
+
+  		if(data.type == 'clean_screen'){
+        var response = { msg: 'clean screen'}
+        sendResponse(response)
+      }
 })
 
 console.log('Hi from the background, working...')
