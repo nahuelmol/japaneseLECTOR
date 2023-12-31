@@ -8,6 +8,8 @@ function askText(){
 		var idiom = ''
 		document.getElementById('text_result').innerHTML = TextObject.content;
 
+		console.log(TextObject.cleaned_text)
+
 		if(TextObject.lang == 'eng'){
 			idiom = 'English'
 		} else if (TextObject.lang == 'jap'){
@@ -15,7 +17,7 @@ function askText(){
 		} else if (TextObject.lang == 'ger'){
 			idiom ='German'
 		}
-		
+
 		document.getElementById('text_desc').innerHTML = 'in ' + idiom;
 	})
 }

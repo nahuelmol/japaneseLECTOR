@@ -1,7 +1,8 @@
 
 var TextObject = {
   content:'empty',
-  lang:'default'
+  lang:'default',
+  cleaned_text:[]
 }
 
 var ResourceObject = {
@@ -56,7 +57,9 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'ask_text'){
         
+        TextObject.cleaned_text = CleanText(TextObject.content)
         sendResponse(TextObject)
+
 
       }else {
 
