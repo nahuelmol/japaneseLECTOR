@@ -11,14 +11,18 @@
     "activeTab",
     "<all_urls>"
   ],
-  "content_security_policy": "script-src blob: 'self' https://unpkg.com https://cdnjs.cloudflare.com 'wasm-eval'; object-src 'self';",
+  "content_security_policy": "script-src blob: 'self' 'unsafe-eval' https://cdn.rawgit.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com ; object-src 'self'; worker-src blob: text/plain;",
+  
   "browser_action": {
     "default_icon": "icons/border-48.png",
     "default_title": "Go!",
     "default_popup":"popup/popup.html"
   },
   "background": {
-   "scripts": ["background/index.js","background/second.js"]
+   "scripts": [
+      "background/index.js",
+      "background/second.js"
+    ]
   }
   
 }

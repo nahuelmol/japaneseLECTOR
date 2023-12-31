@@ -1,21 +1,78 @@
 var IMG = ''
 
+function askText(){
+	var REQUEST = { type:'ask_text'}
+
+	var arrayData = browser.runtime.sendMessage(REQUEST);
+	arrayData.then(TextObject => {
+		var idiom = ''
+		document.getElementById('text_result').innerHTML = TextObject.content;
+
+		if(TextObject.lang == 'eng'){
+			idiom = 'English'
+		} else if (TextObject.lang == 'jap'){
+			idiom = 'Japanese'
+		} else if (TextObject.lang == 'ger'){
+			idiom ='German'
+		}
+		
+		document.getElementById('text_desc').innerHTML = 'in ' + idiom;
+	})
+}
+
+function LanguageSelected () {
+	var boxes = document.getElementsByName('myCheckbox');
+	var checkedboxes = Array.from(boxes).filter(checkbox => checkbox.checked);
+
+	if (checkedboxes.length > 0) {
+		if (checkedboxes.length == 1){
+			return checkedboxes[0].value;
+
+		} else {
+			console.log('just one language should be selected')
+		}
+	}else {
+		console.log('please, select a language')
+	}
+}
+
+async function Extractor(){
+    
+    var REQUEST = { 
+    	type: 'extract_text',
+    	lang: await LanguageSelected()
+		}
+	
+
+	function sendMessageAsync() {
+        return new Promise(resolve => {
+            browser.runtime.sendMessage(REQUEST, response => {
+                resolve(response);
+            });
+        });
+    }
+
+
+
+    await sendMessageAsync();
+}
+
 function AskUri(){
 
 	var REQUEST = { type: 'askURI'}
 	
 	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(response => {
+	arrayData.then(resource => {
 	   
-	   	if(response.uri !== undefined){
+	   	if(resource.uri !== undefined){
 
 	   		IMG = new Image()
-	   		IMG.src = response.uri
+	   		IMG.src = resource.uri
 	   		IMG.id = 'img_result'
 
 	   		document.getElementById('img').appendChild(IMG)
 
-	   	}else if(respose.uri == 'empty'){
+	   	}else if(resource.uri == 'empty'){
 			
 			var res = document.getElementById("result")
 			
@@ -35,9 +92,10 @@ function AskUri(){
 function CleanScreen () {
 	var REQUEST = { type:'clean_screen'}
 
-	elemento = document.getElementById('img_result')
-	elemento.parentNode.removeChild(elemento)
-
+	if(document.getElementById('img_result')){
+		elemento = document.getElementById('img_result')
+		elemento.parentNode.removeChild(elemento)
+	}
 
 }
 
@@ -64,108 +122,17 @@ function CleanCapture(){
 
 }
 
-function FrontStarter(){
-	window.open('front.html')
-}
 
-function GettingTextFetch(){
-
-
-    // Utilizando fetch para cargar el script wasm de Tesseract.js dinámicamente
-    fetch('https://unpkg.com/tesseract.js-core@2.0.0-beta.10/tesseract-core.wasm.js')
-      .then(response => response.text())
-      .then(scriptText => {
-        const blob = new Blob([scriptText], { type: 'application/javascript' });
-        const scriptURL = URL.createObjectURL(blob);
-
-        const script = document.createElement('script');
-        script.src = scriptURL;
-        script.onload = initializeTesseractWorker; // Llamar a la función después de cargar el script
-        document.body.appendChild(script);
-      })
-      .catch(error => {
-        console.error('Error al cargar el script wasm:', error);
-      });
-
-    function initializeTesseractWorker() {
-    	console.log('initializeTesseractWorker called');
-
-    }
-
-
-}
-
-function GetMyTexts(){
-
-	const worker = new Tesseract.TesseractWorker()
-
-	var res = document.getElementById("result")
-
-	var percent = document.createElement("p")
-	var state   = document.createElement("p")
-
-	percent.id = "percent"
-	state.id = "state"
-	res.appendChild(percent)
-	res.appendChild(state)
-
-	worker.recognize(IMG)
-	.progress(function(packet){
-
-		var state_ele = document.getElementById("state")
-
-		if(packet.status == "loading tesseract core"){
-			var msg = "loading core"
-
-			console.log(msg)
-			state_ele.innerHTML = msg
-		}
-
-		if(packet.status == "initializing tesseract"){
-			var msg = "initializing"
-
-			console.log(msg)
-			state_ele.innerHTML = msg
-		}
-
-		if(packet.status == "recognizing text"){
-			var msg = "recognizing text.. in progress"
-			
-			console.log(msg)
-			state_ele.innerHTML = msg
-
-			var num_percent = packet.progress/100
-
-			document.getElementById("percent").innerHTML = num_percent
-		}
-
-		if(packet.status == "loading language traineddata"){
-			var msg = "loading data"
-			console.log(msg)
-
-			state_ele.innerHTML = msg
-		}
-	})
-	.then(function(data){
-		console.log('text: ',data.text)
-
-		var text = document.createElement("p")
-
-		text.innerHTML = data.text
-
-		res.appendChild(text)
-	})
-
-}
 
 if(window.location.pathname === '/popup/popup.html'){
-	document.getElementById('capt').addEventListener("click",	Capture)
-	//document.getElementById('clean_cap').addEventListener("click", CleanCapture)
-	document.getElementById('front').addEventListener("click",FrontStarter)
+	document.getElementById('capt').addEventListener("click",Capture)
 
-}else if(window.location.pathname === '/popup/front.html'){
-	document.getElementById('analysis').addEventListener("click",GettingTextFetch)
+	document.getElementById('ask').addEventListener("click", AskUri)
+	document.getElementById('clean_screen').addEventListener("click", CleanScreen)
+	document.getElementById('clean_capture').addEventListener("click", CleanCapture)
+
+	document.getElementById('extractor').addEventListener("click", Extractor)
+	document.getElementById('ask_text').addEventListener("click", askText)
 }
 
-document.getElementById('ask').addEventListener("click", AskUri)
-document.getElementById('clean_screen').addEventListener("click", CleanScreen)
+

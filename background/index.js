@@ -1,22 +1,22 @@
-var GLOBAL_URI = 'empty'
 
-const onResponse = res => {
-	console.log('res: ',res[0])
+var TextObject = {
+  content:'empty',
+  lang:'default'
 }
 
-const UriAnalize = (uri,callback) => {
-	var uri_divided = uri.split(',')
+var ResourceObject = {
+  uri:'empty'
 }
 
 const onCaptured = imageUri => {
 	var img = decodeURIComponent(imageUri)
 
-	GLOBAL_URI = imageUri
+  ResourceObject.uri = imageUri
 
 	if(img === imageUri){
-		UriAnalize(imageUri, onResponse)
+		console.log('the URI has any changes')
 	}else{
-		console.log('the uri changes as a result of the conversion')
+		console.log('the URI changed as a result of the conversion')
 	}
 }
 
@@ -28,33 +28,42 @@ browser.runtime.onMessage.addListener(
   	(data, sender, sendResponse) => {
 
   		if(data.type == 'capture'){
+
   			 var capturing = browser.tabs.captureVisibleTab()
 			   capturing.then(onCaptured, onError);
-
 			   var response = { msg:'capturing' }
-
 			   sendResponse(response)
-  		}
 
-  		if(data.type == 'askURI'){
-  			var response = { uri:GLOBAL_URI }
+  		} else if(data.type == 'askURI'){
 
-  			sendResponse(response)
-  		}
+  			sendResponse(ResourceObject)
 
-  		if(data.type == 'clean_capture'){
+  		} else if(data.type == 'clean_capture'){
 
-  			GLOBAL_URI == 'empty'
-
+  			ResourceObject.uri == 'empty'
   			var response = { msg:'cleaning capture'}
-
   			sendResponse(response)
-  		}
 
-  		if(data.type == 'clean_screen'){
+  		} else if(data.type == 'clean_screen'){
+
         var response = { msg: 'clean screen'}
         sendResponse(response)
+
+      } else if(data.type == 'extract_text'){
+
+        TextObject.lang = data.lang
+        TextExtractor(ResourceObject.uri, TextObject)
+
+      } else if(data.type == 'ask_text'){
+        
+        sendResponse(TextObject)
+
+      }else {
+
+        console.log('it seems like the message was not programmed')
+
       }
+
 })
 
 console.log('Hi from the background, working...')

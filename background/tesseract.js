@@ -1,0 +1,1 @@
+Moved Permanently. Redirecting to https://cdn.jsdelivr.net/gh/naptha/tesseract.js@0.1.0/dist/tesseract.js
