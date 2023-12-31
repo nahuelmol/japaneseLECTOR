@@ -12,6 +12,8 @@ async function WordInspectorNotFound(wordToAnalize, language){
 	if(languages.includes(language)){
 		var index 	= languages.indexOf(language)
 		LANGUAGE 	= apilanges[index]
+	}else {
+		LANGUAGE 	= 'en'
 	}
 
 	var apiROOT = 'https://api.dictionaryapi.dev/api/v2/entries/'
@@ -35,6 +37,11 @@ function CleanText (TextObject) {
 	symbols = ["@", "=", ")","(","\\", "_", "-","|","/)"]
 	numbers = [ '0','1','2','3','4','5','6','7','8','9']
 
+	letters1 = ['b','c','d','e','f','g','h','j','k', 'l','m','n']
+	letters2 = ['o','p','q','r','s','t','u','v','w','x','y','z']
+
+	letters = letters1.concat(letters2)
+
 	var wordsArray = text.split(" ");
 
 	wordsArray.forEach(space => {
@@ -43,8 +50,8 @@ function CleanText (TextObject) {
 			var nopoints = (space.match(/\./g) || []).length;
 			var newspace  = space.replace(/\./g, '');
 
-			var index = spaces.indexOf(space)
-			spaces[index] = newspace
+			var index = wordsArray.indexOf(space)
+			wordsArray[index] = newspace
 		}
 
 		if(space.includes('-')){
@@ -53,16 +60,16 @@ function CleanText (TextObject) {
 			var nopoints = (space.match(/\+ typo +/g) || []).length;
 			var newspace  = space.replace(/\ + typo +/g, '');
 
-			var index = spaces.indexOf(space)
-			spaces[index] = newspace
+			var index = wordsArray.indexOf(space)
+			wordsArray[index] = newspace
 
 		} else if (space.includes('=')){
 			var typo = '='; 
 			var nopoints = (space.match(/\+ typo +/g) || []).length;
 			var newspace  = space.replace(/\ + typo +/g, '');
 
-			var index = spaces.indexOf(space)
-			spaces[index] = newspace
+			var index = wordsArray.indexOf(space)
+			wordsArray[index] = newspace
 		}
 
 		
@@ -72,8 +79,8 @@ function CleanText (TextObject) {
 			var nopoints = (space.match(/\./g) || []).length;
 			var newspace  = space.replace(/\./g, '');
 
-			var index = spaces.indexOf(space)
-			spaces[index] = newspace
+			var index = wordsArray.indexOf(space)
+			wordsArray[index] = newspace
 
 		} else if(space.includes('(')) {
 
@@ -81,8 +88,8 @@ function CleanText (TextObject) {
 			var nopoints = (space.match(/\ + typo + /g) || []).length;
 			var newspace  = space.replace(/\ + typo + /g, '');
 
-			var index = spaces.indexOf(space)
-			spaces[index] = newspace
+			var index = wordsArray.indexOf(space)
+			wordsArray[index] = newspace
 
 		}
 	})
@@ -102,6 +109,13 @@ function CleanText (TextObject) {
 
 	wordsArray.forEach(space => {
 		if(symbols.includes(space) || numbers.includes(space)){
+			var index = wordsArray.indexOf(space)
+			wordsArray.splice(index, 1);
+		}
+	})
+
+	wordsArray.forEach(space => {
+		if(letters.includes(space)){
 			var index = wordsArray.indexOf(space)
 			wordsArray.splice(index, 1);
 		}

@@ -71,6 +71,8 @@ function AskUri(){
 	   		IMG = new Image()
 	   		IMG.src = resource.uri
 	   		IMG.id = 'img_result'
+	   		IMG.style.width = '100%';
+			IMG.style.height = 'auto';
 
 	   		document.getElementById('img').appendChild(IMG)
 
