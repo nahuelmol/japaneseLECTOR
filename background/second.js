@@ -2,22 +2,35 @@ var ProgressObject = {
 	progress:0
 }
 
-async function WordInspectorNotFound(wordToAnalize){
+async function WordInspectorNotFound(wordToAnalize, language){
 
-	var apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + wordToAnalize;
+	var languages = ['English', 'Spanish' , 'Japanse', 'German']
+	var apilanges = ['en']
+
+	var LANGUAGE = ''
+
+	if(languages.includes(language)){
+		var index 	= languages.indexOf(language)
+		LANGUAGE 	= apilanges[index]
+	}
+
+	var apiROOT = 'https://api.dictionaryapi.dev/api/v2/entries/'
+	var apiUrl = apiROOT + LANGUAGE + '/' + wordToAnalize;
 
 	fetch(apiUrl)
   		.then(response => {
-    		if (!response.ok) {
-      			return true;
-    		} else {
-    			return false;
-    		}
+  			try {
+  				if(response.ok){
+  					return false
+  				} else { return true }
+  			} catch (err) { return true}
   		})
 	
 }
 
-function CleanText (text) {
+function CleanText (TextObject) {
+
+	text = TextObject.content
 
 	symbols = ["@", "=", ")","(","\\", "_", "-","|","/)"]
 	numbers = [ '0','1','2','3','4','5','6','7','8','9']
@@ -26,8 +39,51 @@ function CleanText (text) {
 
 	wordsArray.forEach(space => {
 
-		if(space.includes('.') || space.includes('..') || space.includes('...')){
-			//dont know what to do
+		if(space.includes('.')){
+			var nopoints = (space.match(/\./g) || []).length;
+			var newspace  = space.replace(/\./g, '');
+
+			var index = spaces.indexOf(space)
+			spaces[index] = newspace
+		}
+
+		if(space.includes('-')){
+
+			var typo = '-'; 
+			var nopoints = (space.match(/\+ typo +/g) || []).length;
+			var newspace  = space.replace(/\ + typo +/g, '');
+
+			var index = spaces.indexOf(space)
+			spaces[index] = newspace
+
+		} else if (space.includes('=')){
+			var typo = '='; 
+			var nopoints = (space.match(/\+ typo +/g) || []).length;
+			var newspace  = space.replace(/\ + typo +/g, '');
+
+			var index = spaces.indexOf(space)
+			spaces[index] = newspace
+		}
+
+		
+		if(space.includes(')')){
+
+			var typo = ')'
+			var nopoints = (space.match(/\./g) || []).length;
+			var newspace  = space.replace(/\./g, '');
+
+			var index = spaces.indexOf(space)
+			spaces[index] = newspace
+
+		} else if(space.includes('(')) {
+
+			var typo = '('
+			var nopoints = (space.match(/\ + typo + /g) || []).length;
+			var newspace  = space.replace(/\ + typo + /g, '');
+
+			var index = spaces.indexOf(space)
+			spaces[index] = newspace
+
 		}
 	})
 
@@ -52,7 +108,7 @@ function CleanText (text) {
 	})
 
 	wordsArray.forEach(space => {
-		var res = WordInspectorNotFound(space);
+		var res = WordInspectorNotFound(space, TextObject.lang);
 
 		if(res){
 			var index = wordsArray.indexOf(space)
@@ -61,8 +117,9 @@ function CleanText (text) {
 
 	})
 
+	var phrase = wordsArray.join()
 
-	return wordsArray;
+	return phrase;
 }
 
 function InfoLogger (info){

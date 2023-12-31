@@ -57,7 +57,7 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'ask_text'){
         
-        TextObject.cleaned_text = CleanText(TextObject.content)
+        TextObject.cleaned_text = CleanText(TextObject)
         sendResponse(TextObject)
 
 
