@@ -2,7 +2,8 @@
 var TextObject = {
   content:'empty',
   lang:'default',
-  cleaned_text:[]
+  cleaned_text:[],
+  progress:0
 }
 
 var ResourceObject = {
@@ -41,7 +42,7 @@ browser.runtime.onMessage.addListener(
 
   		} else if(data.type == 'clean_capture'){
 
-  			ResourceObject.uri == 'empty'
+  			ResourceObject.uri = undefined
   			var response = { msg:'cleaning capture'}
   			sendResponse(response)
 
@@ -61,7 +62,22 @@ browser.runtime.onMessage.addListener(
         sendResponse(TextObject)
 
 
-      }else {
+      } else if(data.type == 'check_progress'){
+
+        sendResponse(TextObject)
+
+      } else if(data.type == 'reset_text'){
+
+        TextObject.content = 'empty'
+        TextObject.lang = 'default'
+        TextObject.cleaned_text = []
+        TextObject.progress = 0
+
+        ResourceObject.uri = undefined
+
+        sendResponse({msg:'TextObject cleaned'})
+
+      } else {
 
         console.log('it seems like the message was not programmed')
 

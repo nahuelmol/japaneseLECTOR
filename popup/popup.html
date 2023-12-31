@@ -15,14 +15,17 @@
 	<title>Go</title>
 </head>
 <body>
-	<div class="container">
-		<button id="extractor">Extract Text</button>
-		<p id="text_result">Nothing asked</p>
-		<p id="text_desc"></p>
-		<button id="ask_text">Ask text</button>
+	<div id="maincontainer" class="container">
+		<button class="btn btn-sm btn-primary" id="extractor">Extract Text</button>
+		<div id="texto_container"></div>
+		<button class="btn btn-sm btn-success" id="ask_text">Ask text</button>
+		<button class="btn btn-sm btn-primary" id="hide_text">Hide text</button>
+		<button class="btn btn-sm btn-primary" id="reset_text">Reset</button>
+		<p class="fs-8">progress: <mark class="text-primary" id="progress"></mark>%</p>
+		
 	</div>
 	
-	<div class="container">
+	<div class="container bg-secondary">
 		<p>Select the language</p>
 		<div class="container">
 			<label for="english">English:</label>
@@ -46,12 +49,12 @@
     		<div class="col-sm-4">
     		</div>
     		<div class="col-sm-4">
-    			<button id="clean_screen">Clean Screen</button>
-    			<button id="clean_capture">Clean Capture</button>
+    			<button class="btn btn-sm btn-primary" id="clean_screen">Clean Screen</button>
+    			<button class="btn btn-sm btn-primary" id="clean_capture">Clean Capture</button>
     		</div>
     		<div class="col-sm-4">
-				<button id="capt">Capture</button>
-    			<button id="ask">Ask capture</button>
+				<button class="btn btn-sm btn-primary" id="capt">Capture</button>
+    			<button class="btn btn-sm btn-primary" id="ask">Ask capture</button>
     		</div>
   		</div>
 	</div>

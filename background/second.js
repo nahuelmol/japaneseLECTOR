@@ -44,11 +44,30 @@ function CleanText (TextObject) {
 
 	var wordsArray = text.split(" ");
 
+	console.log(wordsArray)
+
 	wordsArray.forEach(space => {
 
-		if(space.includes('.')){
+		if(space.includes('\n')){
+			var index = wordsArray.indexOf(space)
+
+			var firstHalf = wordsArray.slice(0, index);
+			var aux = space.split('\n')
+			var secondHalf = wordsArray.slice(index + 1);
+		
+			wordsArray = (firstHalf.concat(aux)).concat(secondHalf)
+		}
+	})
+
+
+	wordsArray.forEach(space => {
+
+		if(space.includes(".")){
 			var nopoints = (space.match(/\./g) || []).length;
 			var newspace  = space.replace(/\./g, '');
+
+			console.log('oldword: ', space)
+			console.log('newword: ', newspace)
 
 			var index = wordsArray.indexOf(space)
 			wordsArray[index] = newspace
@@ -95,19 +114,6 @@ function CleanText (TextObject) {
 	})
 
 	wordsArray.forEach(space => {
-
-		if(space.includes('\n')){
-			var index = wordsArray.indexOf(space)
-
-			var firstHalf = wordsArray.slice(0, index);
-			var aux = space.split('\n')
-			var secondHalf = wordsArray.slice(index + 1);
-		
-			wordsArray = (firstHalf.concat(aux)).concat(secondHalf)
-		}
-	})
-
-	wordsArray.forEach(space => {
 		if(symbols.includes(space) || numbers.includes(space)){
 			var index = wordsArray.indexOf(space)
 			wordsArray.splice(index, 1);
@@ -136,13 +142,15 @@ function CleanText (TextObject) {
 	return phrase;
 }
 
-function InfoLogger (info){
+function InfoLogger (info, TextObject){
 
 	if(info.status == 'recognizing text'){
 		if(ProgressObject.progress == 0){
 			console.log(info.status)
 			ProgressObject.progress = 1;
 		}
+		var progress = info.progress.toFixed(3) 
+		TextObject.progress = progress * 100
 		console.log(info.progress)
 
 	} else {
@@ -170,7 +178,7 @@ async function TextExtractor(myURI, TextObject) {
 			myURI, 
 			TextObject.lang,
 			{ 	
-				logger: info => InfoLogger(info),
+				logger: info => InfoLogger(info, TextObject),
 				tessedit_char_blacklist: '@#$%^&*', 
 			} 
 		).then(({ data: { text } }) => {
