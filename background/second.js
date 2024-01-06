@@ -2,7 +2,7 @@ var ProgressObject = {
 	progress:0
 }
 
-async function WordInspectorNotFound(wordToAnalize, language){
+const WordInspectorNotFound = (text_array, wordToAnalize, language) => {
 
 	var languages = ['English', 'Spanish' , 'Japanse', 'German']
 	var apilanges = ['en']
@@ -21,125 +21,122 @@ async function WordInspectorNotFound(wordToAnalize, language){
 
 	fetch(apiUrl)
   		.then(response => {
-  			try {
-  				if(response.ok){
-  					return false
-  				} else { return true }
-  			} catch (err) { return true}
+  			if (response.ok) {
+            	return false;
+        	} else if (response.status === 404) {
+
+        		var index = text_array.indexOf(wordToAnalize)
+				text_array.splice(index, 1);
+            	return true;
+        	} else {
+            	return true;
+        	}
   		})
+  		.catch(error => {
+        	console.error('Error:', error);
+        	return true; 
+    	});
 	
+}
+
+const TakeCharactersOFF = async (text_array) => {
+
+	const charactersToRemove = ["@",".",")","(","|","=","-","_","/","[","]"]
+
+    text_array.forEach((single_text, index) => {
+        charactersToRemove.forEach(character => {
+            if (single_text.includes(character)) {
+
+                var newText = single_text.split(character).join('');
+                text_array[index] = newText;
+            }
+        });
+    });
+};
+
+const TakeLettersOFF = async (text_array) => {
+
+	letters1 = ['b','c','d','e','f','g','h','j','k', 'l','m','n']
+	letters2 = ['o','p','q','r','s','t','u','v','w','x','y','z', '']
+	letters3 = ['B', 'C', 'J', 'P']
+
+	letters = letters1.concat(letters2).concat(letters3)
+
+    text_array.forEach((single_text, index) => {
+    	if(letters.includes(single_text)){
+			var index = text_array.indexOf(single_text)
+            text_array.splice(index, 1)
+    	}
+    });
+}
+
+const SplitingTheText = async (text_array) => {
+	text_array.forEach(single_text => {
+
+		if(single_text.includes('\n')){
+			var index = text_array.indexOf(single_text)
+
+			var firstHalf = single_text.slice(0, index);
+			var aux = single_text.split('\n')
+			var secondHalf = single_text.slice(index + 1);
+		
+			text_array = (firstHalf.concat(aux)).concat(secondHalf)
+		}
+	})
+
+	console.log(text_array)
+
+}
+
+const LookIfWordsExists = async (text_array) => {
+	for (const single_text of text_array){
+		var res = await WordInspectorNotFound(text_array, single_text, TextObject.lang);
+
+		if(res){
+			var index = text_array.indexOf(single_text)
+			text_array.splice(index, 1);
+		}
+	}
+	
+}
+
+const ReplaceNumberText = async (text_array) => {
+
+	numbers = [ '0','1','2','3','4','5','6','7','8','9']
+
+	text_array.forEach(single_text => {
+		if(numbers.includes(single_text)){
+			var index = text_array.indexOf(single_text)
+			text_array.splice(index, 1);
+		}
+	})
 }
 
 function CleanText (TextObject) {
 
-	text = TextObject.content
+	TextObject.cleaned_text = TextObject.content.split(" ");
 
-	symbols = ["@", "=", ")","(","\\", "_", "-","|","/)"]
-	numbers = [ '0','1','2','3','4','5','6','7','8','9']
+	const ShowTextCleaned = (Obj) => {
+		console.log(Obj.cleaned_text)
+		Obj.content = Obj.cleaned_text.join()
+	}
 
-	letters1 = ['b','c','d','e','f','g','h','j','k', 'l','m','n']
-	letters2 = ['o','p','q','r','s','t','u','v','w','x','y','z']
+	const main = async () => {
+		await SplitingTheText(TextObject.cleaned_text);
+		await ShowTextCleaned(TextObject)
 
-	letters = letters1.concat(letters2)
+		await TakeCharactersOFF(TextObject.cleaned_text)
+		await ReplaceNumberText(TextObject.cleaned_text)
+		await TakeCharactersOFF(TextObject.cleaned_text)
+		await ReplaceNumberText(TextObject.cleaned_text)
+		await TakeLettersOFF(TextObject.cleaned_text)
 
-	var wordsArray = text.split(" ");
+		await LookIfWordsExists(TextObject.cleaned_text)
 
-	console.log(wordsArray)
+		await ShowTextCleaned(TextObject)
+	}
 
-	wordsArray.forEach(space => {
-
-		if(space.includes('\n')){
-			var index = wordsArray.indexOf(space)
-
-			var firstHalf = wordsArray.slice(0, index);
-			var aux = space.split('\n')
-			var secondHalf = wordsArray.slice(index + 1);
-		
-			wordsArray = (firstHalf.concat(aux)).concat(secondHalf)
-		}
-	})
-
-
-	wordsArray.forEach(space => {
-
-		if(space.includes(".")){
-			var nopoints = (space.match(/\./g) || []).length;
-			var newspace  = space.replace(/\./g, '');
-
-			console.log('oldword: ', space)
-			console.log('newword: ', newspace)
-
-			var index = wordsArray.indexOf(space)
-			wordsArray[index] = newspace
-		}
-
-		if(space.includes('-')){
-
-			var typo = '-'; 
-			var nopoints = (space.match(/\+ typo +/g) || []).length;
-			var newspace  = space.replace(/\ + typo +/g, '');
-
-			var index = wordsArray.indexOf(space)
-			wordsArray[index] = newspace
-
-		} else if (space.includes('=')){
-			var typo = '='; 
-			var nopoints = (space.match(/\+ typo +/g) || []).length;
-			var newspace  = space.replace(/\ + typo +/g, '');
-
-			var index = wordsArray.indexOf(space)
-			wordsArray[index] = newspace
-		}
-
-		
-		if(space.includes(')')){
-
-			var typo = ')'
-			var nopoints = (space.match(/\./g) || []).length;
-			var newspace  = space.replace(/\./g, '');
-
-			var index = wordsArray.indexOf(space)
-			wordsArray[index] = newspace
-
-		} else if(space.includes('(')) {
-
-			var typo = '('
-			var nopoints = (space.match(/\ + typo + /g) || []).length;
-			var newspace  = space.replace(/\ + typo + /g, '');
-
-			var index = wordsArray.indexOf(space)
-			wordsArray[index] = newspace
-
-		}
-	})
-
-	wordsArray.forEach(space => {
-		if(symbols.includes(space) || numbers.includes(space)){
-			var index = wordsArray.indexOf(space)
-			wordsArray.splice(index, 1);
-		}
-	})
-
-	wordsArray.forEach(space => {
-		if(letters.includes(space)){
-			var index = wordsArray.indexOf(space)
-			wordsArray.splice(index, 1);
-		}
-	})
-
-	wordsArray.forEach(space => {
-		var res = WordInspectorNotFound(space, TextObject.lang);
-
-		if(res){
-			var index = wordsArray.indexOf(space)
-			wordsArray.splice(index, 1);
-		}
-
-	})
-
-	var phrase = wordsArray.join()
-
-	return phrase;
+	main();
 }
 
 function InfoLogger (info, TextObject){
@@ -192,5 +189,10 @@ async function TextExtractor(myURI, TextObject) {
 	}
 }
 
+
+const ExecuteScript = () => {
+
+  return browser.tabs.executeScript({file:'background/content.js'});
+}
 
 

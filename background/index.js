@@ -1,4 +1,6 @@
 
+
+
 var TextObject = {
   content:'empty',
   lang:'default',
@@ -58,7 +60,7 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'ask_text'){
         
-        TextObject.cleaned_text = CleanText(TextObject)
+        CleanText(TextObject)
         sendResponse(TextObject)
 
 
@@ -77,12 +79,40 @@ browser.runtime.onMessage.addListener(
 
         sendResponse({msg:'TextObject cleaned'})
 
+      } else if(data.action == 'mouseDown'){
+
+        ProcessMouseMovement(data.startPosition, 'start')
+        var response = { msg:'tracking started' }
+        sendResponse(response)
+
+      } else if(data.action == 'mouseUp'){
+
+        ProcessMouseMovement(data.endPosition, 'end')
+        var response = { msg:'tracking ended' }
+        sendResponse(response)
+
+      } else if(data.type == 'ask_squared_image'){
+        
+        console.log(ResourceStractedObject)
+        sendResponse(ResourceStractedObject);
+
+      } else if(data.type == 'activate_draw'){
+
+        var resp = ExecuteScript()
+          .then(() => {
+            console.log('Script injected successfully');
+            return { msg: 'loading content' };
+          })
+          .catch((error) => {
+            console.error('Error injecting content script:', error);
+            return { msg: 'error loading content' };
+          });
+
+        sendResponse(resp);
+          
       } else {
-
-        console.log('it seems like the message was not programmed')
-
+        sendResponse('there is not a message to process')
       }
-
-})
+});
 
 console.log('Hi from the background, working...')

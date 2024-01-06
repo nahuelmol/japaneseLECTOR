@@ -1,5 +1,23 @@
 var IMG = ''
 
+var MODE = {
+	on:'normal'
+}
+
+var DRAWING = {
+	on:false
+}
+
+const StartDrawing = async () => {
+
+	var REQUEST = { type:'activate_draw'}
+	var arrayData = browser.runtime.sendMessage(REQUEST);
+
+	arrayData.then(response => {
+		console.log(response.msg)
+	})
+}
+
 function updateProgress() {
 	var REQUEST = { type:'check_progress'}
 	var arrayData = browser.runtime.sendMessage(REQUEST);
@@ -76,6 +94,37 @@ async function Extractor(){
     await sendMessageAsync();
 }
 
+const ImageCreator = (imageid, parentid, uri) => {
+
+	IMG = new Image()
+	IMG.src = (uri == undefined)? 'small.jpg' : uri;
+	IMG.id = imageid
+	IMG.style.width = '100%';
+	IMG.style.height = 'auto';
+
+	document.getElementById(parentid).appendChild(IMG)
+}
+
+function AskForSquaredImage(){
+
+	var REQUEST = { type: 'ask_squared_image'}
+
+	var arrayData = browser.runtime.sendMessage(REQUEST);
+	arrayData.then(resource => {
+
+		if(resource.uri !== undefined){
+			console.log(resource)
+
+			ImageCreator('img_squared2', 'stract_section', resource.uriEdited);
+			ImageCreator('img_squared', 'stract_section', resource.uri);
+
+	   	} else if (resource.uri == undefined){
+
+	   		ImageCreator('error_capture', 'stract_section', resource.uri);
+		}
+	})
+}
+
 function AskCapture(){
 
 	var REQUEST = { type: 'askURI'}
@@ -85,13 +134,7 @@ function AskCapture(){
 	   
 	   	if(resource.uri !== undefined){
 
-	   		IMG = new Image()
-	   		IMG.src = resource.uri
-	   		IMG.id = 'img_result'
-	   		IMG.style.width = '100%';
-			IMG.style.height = 'auto';
-
-	   		document.getElementById('img').appendChild(IMG)
+	   		ImageCreator('img_result', 'img', resource.uri)
 
 	   	}else if(resource.uri == 'empty'){
 			
@@ -185,7 +228,30 @@ function ResetText (){
 	arrayData.then(response => {
 		console.log('reseted: ', response.msg)
 	})
+}
 
+
+const Switcher = async () => {
+	var div1 = document.getElementById("normal");
+	var div2 = document.getElementById("specialized");
+
+	if (div1.classList.contains("hidden")) {
+        // Show div1 and hide div2
+		div1.classList.remove("hidden");
+        div2.classList.add("hidden");
+	} else {
+        // Show div2 and hide div1
+        div1.classList.add("hidden");
+        div2.classList.remove("hidden");
+	}
+
+	if(MODE.on == 'normal'){
+		MODE.on = 'specialized';
+		document.getElementById('titlemode').innerHTML = 'Specialized';
+	} else if(MODE.on == 'specialized'){
+		MODE.on = 'normal';
+		document.getElementById('titlemode').innerHTML = 'Normal';
+	}
 }
 
 
@@ -200,6 +266,14 @@ if(window.location.pathname === '/popup/popup.html'){
 	document.getElementById('ask_text').addEventListener("click", askText)
 	document.getElementById('reset_text').addEventListener("click", ResetText)
 	document.getElementById('hide_text').addEventListener("click", HideText)
+
+	document.getElementById('ask_squared_image').addEventListener("click", AskForSquaredImage)
+
+	document.getElementById('switcher').addEventListener("click", Switcher);
+	document.getElementById('start_drawing').addEventListener("click", StartDrawing)
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 
 

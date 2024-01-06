@@ -11,21 +11,39 @@
   			height:500px;
 		}
 
+		.hidden {
+      		display: none;
+    	}
+
+		#buttonContainer {
+      		display: flex;
+    	}    	
+
 	</style>
 	<title>Go</title>
 </head>
 <body>
-	<div id="maincontainer" class="container">
+	<dir class="container" id="buttonContainer">
+		<button class="btn btn-sm" id="switcher">Switch</button>
+		<p id="titlemode"></p>
+	</dir>
+	
+
+	<div id="normal">
+
+		<div id="maincontainer" class="container">
 		<button class="btn btn-sm btn-primary" id="extractor">Extract Text</button>
 		<div id="texto_container"></div>
 		<button class="btn btn-sm btn-success" id="ask_text">Ask text</button>
 		<button class="btn btn-sm btn-primary" id="hide_text">Hide text</button>
 		<button class="btn btn-sm btn-primary" id="reset_text">Reset</button>
-		<p class="fs-8">progress: <mark class="text-primary" id="progress"></mark>%</p>
+		<div class="container">
+			<p class="fs-8">progress: <mark class="text-primary" id="progress"></mark>%</p>
+		</div>
 		
-	</div>
-	
-	<div class="container bg-secondary">
+		</div>
+
+		<div class="container bg-secondary">
 		<p>Select the language</p>
 		<div class="container">
 			<label for="english">English:</label>
@@ -41,10 +59,9 @@
 			<label for="german">German:</label>
 			<input type="checkbox" id="german" name="myCheckbox" value="German">
 		</div>
-		
-	</div>
+		</div>
 
-	<div class="container">
+		<div class="container">
   		<div class="row">
     		<div class="col-sm-4">
     		</div>
@@ -57,9 +74,28 @@
     			<button class="btn btn-sm btn-primary" id="ask">Ask capture</button>
     		</div>
   		</div>
+		</div>
+
+		<div id="img"></div>
+
+		
+		
 	</div>
 
-	<div id="img"></div>
+	<div id="specialized">
+
+		<div class="container">
+			<button class="btn btn-sm btn-primary" id="start_drawing">Start Drawing</button>
+			<button class="btn btn-sm btn-primary" id="ask_squared_image">Ask squared</button>
+			<div id="stract_section"></div>
+		</div>
+		
+	</div>
+
+	
+	
+
 	<script src="./popup.js" type="text/javascript"></script>
+
 </body>
 </html>
