@@ -2,8 +2,9 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="https://bootswatch.com/4/yeti/bootstrap.css">
-	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://bootswatch.com/4/yeti/bootstrap.css">
 	<style type="text/css">
 
 		body {
@@ -44,21 +45,15 @@
 		</div>
 
 		<div class="container bg-secondary">
-		<p>Select the language</p>
-		<div class="container">
+			<p>Select the language</p>
 			<label for="english">English:</label>
 			<input type="checkbox" id="english" name="myCheckbox" value="English">
-		</div>
 		
-		<div class="container">
 			<label for="japanese">Japanese:</label>
 			<input type="checkbox" id="japanese" name="myCheckbox" value="Japanese">
-		</div>
 		
-		<div class="container">
 			<label for="german">German:</label>
 			<input type="checkbox" id="german" name="myCheckbox" value="German">
-		</div>
 		</div>
 
 		<div class="container">
@@ -82,14 +77,31 @@
 		
 	</div>
 
-	<div id="specialized">
+	<div class="hidden" id="specialized">
 
 		<div class="container">
 			<button class="btn btn-sm btn-primary" id="start_drawing">Start Drawing</button>
 			<button class="btn btn-sm btn-primary" id="ask_squared_image">Ask squared</button>
+			<button class="btn btn-sm btn-primary" id="reset_free_selection">Reset</button>
+			<button class="btn btn-sm btn-primary" id="clean_screen_FS">clean screen</button>
 			<div id="stract_section"></div>
-		</div>
+
+			<label for="english">English:</label>
+			<input type="checkbox" id="english" name="FSCheckbox" value="English">
 		
+			<label for="japanese">Japanese:</label>
+			<input type="checkbox" id="japanese" name="FSCheckbox" value="Japanese">
+		
+			<label for="german">German:</label>
+			<input type="checkbox" id="german" name="FSCheckbox" value="German">
+		</div>
+
+			<button class="btn btn-sm btn-primary" id="extract_text_FS">Extract Text</button>
+			<button class="btn btn-sm btn-primary" id="ask_FS_text">Ask Text</button>
+			<div id="FS_texto_container"></div>
+			<div class="container">
+				<p class="fs-8">progress: <mark class="text-primary" id="FSprogress"></mark>%</p>
+			</div>
 	</div>
 
 	

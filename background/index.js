@@ -1,7 +1,12 @@
 
-
-
 var TextObject = {
+  content:'empty',
+  lang:'default',
+  cleaned_text:[],
+  progress:0
+}
+
+var TextObjectFS = {
   content:'empty',
   lang:'default',
   cleaned_text:[],
@@ -11,6 +16,8 @@ var TextObject = {
 var ResourceObject = {
   uri:'empty'
 }
+
+
 
 const onCaptured = imageUri => {
 	var img = decodeURIComponent(imageUri)
@@ -66,7 +73,11 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'check_progress'){
 
-        sendResponse(TextObject)
+        if(data.mode == 'normal'){
+          sendResponse(TextObject)
+        } else if(data.mode == 'FS'){
+          sendResponse(TextObjectFS)
+        }
 
       } else if(data.type == 'reset_text'){
 
@@ -79,28 +90,27 @@ browser.runtime.onMessage.addListener(
 
         sendResponse({msg:'TextObject cleaned'})
 
-      } else if(data.action == 'mouseDown'){
+      } else if(data.type == 'mouseDown'){
 
-        ProcessMouseMovement(data.startPosition, 'start')
+        ProcessMouseMovement(data.position, 'start')
         var response = { msg:'tracking started' }
         sendResponse(response)
 
-      } else if(data.action == 'mouseUp'){
+      } else if(data.type == 'mouseUp'){
 
-        ProcessMouseMovement(data.endPosition, 'end')
+        ProcessMouseMovement(data.position, 'end')
         var response = { msg:'tracking ended' }
         sendResponse(response)
 
       } else if(data.type == 'ask_squared_image'){
         
-        console.log(ResourceStractedObject)
         sendResponse(ResourceStractedObject);
 
       } else if(data.type == 'activate_draw'){
 
         var resp = ExecuteScript()
           .then(() => {
-            console.log('Script injected successfully');
+            console.log('content.js injected successfully');
             return { msg: 'loading content' };
           })
           .catch((error) => {
@@ -110,6 +120,20 @@ browser.runtime.onMessage.addListener(
 
         sendResponse(resp);
           
+      } else if(data.type == 'reset_free_selection'){
+
+        ResourceStractedObject.uri = 'empty';
+        ResourceStractedObject.uriEdited = 'empty';
+
+        sendResponse({ msg:'reseting the free selection'})
+
+      } else if(data.type == 'extract_text_FS'){
+
+        TextObjectFS.lang = data.lang;
+        TextExtractor(ResourceStractedObject.uriEdited, TextObjectFS);
+
+      } else if(data.type == 'ask_FStext'){
+        sendResponse(TextObjectFS)
       } else {
         sendResponse('there is not a message to process')
       }

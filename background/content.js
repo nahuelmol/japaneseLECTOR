@@ -12,8 +12,8 @@ const MouseDownHandler = (event) => {
   startPosition = { x:event.clientX, y:event.clientY };
 
   var messageINFO = browser.runtime.sendMessage({
-    action: 'mouseDown',
-    startPosition: startPosition
+    type: 'mouseDown',
+    position: startPosition
   });
 
   messageINFO.then(res => console.log(res))
@@ -22,12 +22,12 @@ const MouseDownHandler = (event) => {
 const MouseUpHandler = (event) => {
 
   isMouseDown = false;
-  endPosition = { x:event.clientX, y:event.clientY }
+  position = { x:event.clientX, y:event.clientY }
 
 
   var messageINFO = browser.runtime.sendMessage({
-    action: 'mouseUp',
-    endPosition: endPosition
+    type: 'mouseUp',
+    position,
   });
 
   messageINFO.then(res => console.log(res))

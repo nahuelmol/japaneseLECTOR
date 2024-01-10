@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "Devtools detector",
   "version": "1.0",
-  "description": "This just will integrate de browset api, dev tool",
+  "description": "This just will integrate de browser api, dev tool",
   "permissions": [
     "tabs",
     "storage",
@@ -19,10 +19,6 @@
     "default_popup":"popup/popup.html"
   },
   
-  "permissions": [
-    "activeTab"
-    ]
-  ,
   "background": {
    "scripts": [
       "background/index.js",
@@ -30,10 +26,4 @@
       "background/IsolatedLector.js"
     ]
   }
-  //"content_scripts":[
-  //  {
-  //    "matches": ["<all_urls>"],
-  //   "js": ["background/content.js"]
-  //  } 
-  //]
 }

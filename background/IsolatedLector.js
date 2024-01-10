@@ -13,11 +13,37 @@ var SquareDimension = {
 }
 
 const CutTheImage = () => {
-	const img = new Image();
+	  const img = new Image();
+
+    console.log('cutting');
 
     img.onload = function () {
+
+        console.log('loaded')
+
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
+
+        if((SquareDimension.posYend == SquareDimension.posXstart) || (SquareDimension.posXend == SquareDimension.posXstart)){
+          return;
+        }
+
+        if(SquareDimension.posXend < SquareDimension.posXstart){
+
+          var aux = SquareDimension.posXstart;
+          SquareDimension.posXstart = SquareDimension.posXend;
+          SquareDimension.posXend = aux;
+
+        } else if(SquareDimension.posYend < SquareDimension.posYstart){
+
+          var aux = SquareDimension.posYstart;
+          SquareDimension.posYstart = SquareDimension.posYend;
+          SquareDimension.posYend = aux;
+
+        }
+
+        console.log(SquareDimension);
+
 
         const width   = SquareDimension.posXend - SquareDimension.posXstart;
         const height  = SquareDimension.posYend - SquareDimension.posYstart;
@@ -28,23 +54,19 @@ const CutTheImage = () => {
         const startX = SquareDimension.posXstart; 
         const startY = SquareDimension.posYstart;
 
-        console.log(SquareDimension);
+        const cropX = 0
+        const cropY = 0
+
 
         ctx.drawImage(img, startX, startY, width, height, 0, 0, width, height);
 
         const editedImageUri = canvas.toDataURL('image/png');
 
-        if(ResourceStractedObject.uri == editedImageUri){
+        ResourceStractedObject.uriEdited = editedImageUri;
+    };
 
-        	console.log('nothing changed')
-
-        } else {
-
-        	console.log('they are not the same')
-
-        	ResourceStractedObject.uriEdited = editedImageUri;
-        }
-        
+    img.onerror = function () {
+      console.error('Error loading image');
     };
 
     img.src = ResourceStractedObject.uri;
@@ -77,16 +99,15 @@ const ProcessMouseMovement = async (position, when) => {
   	SquareDimension.posYend = position.y
   	
   	browser.tabs.captureVisibleTab()
-                    .then((dataUrl) => {
-                      console.log('Captured visible tab:', dataUrl);
-                    })
-                    .catch((error) => {
-                      console.error('Error capturing visible tab:', error);
-                    });
-
-  	//capturing.then(StractCaptured, StractErrorHandler);
-  
-  	await CutTheImage()
+          .then((dataUrl) => {
+              console.log('Captured visible tab');
+              ResourceStractedObject.uri = dataUrl;
+              CutTheImage()
+          })
+          .catch((error) => {
+              console.error('Error capturing visible tab');
+          });
+    
   }
 }
 

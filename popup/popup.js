@@ -1,72 +1,78 @@
 var IMG = ''
 
 var MODE = {
-	on:'normal'
+	on:'normal',
+	TextResult:'text_result',
+	TextContainer:'texto_container'
 }
 
 var DRAWING = {
 	on:false
 }
 
-const StartDrawing = async () => {
-
-	var REQUEST = { type:'activate_draw'}
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-
-	arrayData.then(response => {
-		console.log(response.msg)
-	})
-}
-
 function updateProgress() {
-	var REQUEST = { type:'check_progress'}
+	var REQUEST = { type:'check_progress', mode: MODE.on}
 	var arrayData = browser.runtime.sendMessage(REQUEST);
 
 	arrayData.then(response => {
 		var numprogress = response.progress.toFixed(2); 
-		document.getElementById('progress').innerHTML = numprogress;
+		if(MODE.on == 'normal'){
+			document.getElementById('progress').innerHTML = numprogress;
+		} else if(MODE.on == 'FS'){
+			document.getElementById('FSprogress').innerHTML = numprogress;
+		}
 	})
 
 }
 
 setInterval(updateProgress, 500)
 
+const SetTextFromBackground = (imageid, objeto) => {
+	
+}
+
 function askText(){
-	var REQUEST = { type:'ask_text'}
+	var REQUEST = { type:'ask_text'};
+
+	if(MODE.on == 'FS'){
+		REQUEST.type ='ask_FStext';
+		MODE.TextResult = 'FS_text_result';
+		MODE.TextContainer = 'FS_texto_container';
+	}
 
 	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(TextObject => {
+	arrayData.then(objeto => {
 		var idiom = ''
 
-		if(document.getElementById('text_result')){
-			document.getElementById('text_result').innerHTML = TextObject.content;
+		if(document.getElementById(MODE.TextResult)){
+			document.getElementById(MODE.TextResult).innerHTML = objeto.content;
 		} else {
 			paragraph = document.createElement('p')
-			paragraph.textContent = TextObject.content;
+			paragraph.textContent = objeto.content;
 			paragraph.classList.add("bg-secondary")
-			paragraph.id = 'text_result';
-			document.getElementById('texto_container').appendChild(paragraph);
+			paragraph.id = MODE.TextResult;
+			document.getElementById(MODE.TextContainer).appendChild(paragraph);
 		}
 
-		console.log(TextObject.cleaned_text)
-
-		if(TextObject.lang == 'eng'){
+		if(objeto.lang == 'eng'){
 			idiom = 'English'
-		} else if (TextObject.lang == 'jap'){
+		} else if (objeto.lang == 'jap'){
 			idiom = 'Japanese'
-		} else if (TextObject.lang == 'ger'){
+		} else if (objeto.lang == 'ger'){
 			idiom ='German'
 		}
 	})
 }
 
 function LanguageSelected () {
-	var boxes = document.getElementsByName('myCheckbox');
+	var boxes = document.getElementsByName('FSCheckbox');
 	var checkedboxes = Array.from(boxes).filter(checkbox => checkbox.checked);
 
 	if (checkedboxes.length > 0) {
 		if (checkedboxes.length == 1){
-			return checkedboxes[0].value;
+			var language = checkedboxes[0].value;
+			console.log('the language is: '+language)
+			return language;
 
 		} else {
 			console.log('just one language should be selected')
@@ -94,6 +100,16 @@ async function Extractor(){
     await sendMessageAsync();
 }
 
+const ImageDeleter = (imageid) => {
+
+	if(document.getElementById(imageid)){
+		var elemento = document.getElementById(imageid);
+		elemento.parentNode.removeChild(elemento)
+	}
+
+}
+
+
 const ImageCreator = (imageid, parentid, uri) => {
 
 	IMG = new Image()
@@ -105,25 +121,7 @@ const ImageCreator = (imageid, parentid, uri) => {
 	document.getElementById(parentid).appendChild(IMG)
 }
 
-function AskForSquaredImage(){
 
-	var REQUEST = { type: 'ask_squared_image'}
-
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(resource => {
-
-		if(resource.uri !== undefined){
-			console.log(resource)
-
-			ImageCreator('img_squared2', 'stract_section', resource.uriEdited);
-			ImageCreator('img_squared', 'stract_section', resource.uri);
-
-	   	} else if (resource.uri == undefined){
-
-	   		ImageCreator('error_capture', 'stract_section', resource.uri);
-		}
-	})
-}
 
 function AskCapture(){
 
@@ -169,15 +167,8 @@ function AskCapture(){
 
 function CleanScreen () {
 
-	if(document.getElementById('img_result')){
-		var elemento = document.getElementById('img_result')
-		elemento.parentNode.removeChild(elemento)
-	}
-
-	if(document.getElementById('error_capture')){
-		var elemento = document.getElementById('error_capture')
-		elemento.parentNode.removeChild(elemento)
-	}
+	ImageDeleter('img_result')
+	ImageDeleter('error_capture')
 
 }
 
@@ -236,24 +227,95 @@ const Switcher = async () => {
 	var div2 = document.getElementById("specialized");
 
 	if (div1.classList.contains("hidden")) {
-        // Show div1 and hide div2
+        // show div1 and hide div2
 		div1.classList.remove("hidden");
         div2.classList.add("hidden");
 	} else {
-        // Show div2 and hide div1
+        // show div2 and hide div1
         div1.classList.add("hidden");
         div2.classList.remove("hidden");
 	}
 
 	if(MODE.on == 'normal'){
-		MODE.on = 'specialized';
+		MODE.on = 'FS';
 		document.getElementById('titlemode').innerHTML = 'Specialized';
-	} else if(MODE.on == 'specialized'){
+	} else if(MODE.on == 'FS'){
 		MODE.on = 'normal';
 		document.getElementById('titlemode').innerHTML = 'Normal';
 	}
 }
 
+const StartDrawing = async () => {
+
+	var REQUEST = { type:'activate_draw'}
+	var arrayData = browser.runtime.sendMessage(REQUEST);
+
+	arrayData.then(response => {
+		console.log(response.msg)
+	})
+}
+
+function AskForSquaredImage(){
+
+	var REQUEST = { type: 'ask_squared_image'}
+
+	browser.runtime.sendMessage(REQUEST)
+		.then(resource => {
+
+			if((resource.uriEdited !== 'empty') && (resource.uriEdited !== undefined)){
+
+				ImageDeleter('img_squared2');
+				ImageDeleter('error_capture_FS');
+				
+				ImageCreator('img_squared2', 'stract_section', resource.uriEdited);
+
+			}else if(resource.uriEdited == 'empty'){
+
+				ImageDeleter('img_squared2');
+				ImageDeleter('error_capture_FS');
+				
+				ImageCreator('error_capture_FS', 'stract_section', 'small.jpg');
+			}
+		})
+}
+
+
+
+const ResetFreeSelection = () => {
+	var REQUEST = { type: 'reset_free_selection'}
+
+	browser.runtime.sendMessage(REQUEST)
+		.then(response => {
+
+			console.log(response.msg)
+
+		})
+
+}
+
+const CleanScreenFS = () => {
+	ImageDeleter('img_squared2');
+	ImageDeleter('error_capture_FS');
+}
+
+const TextExtractorFS = async () => {
+
+	var REQUEST = { 
+    	type: 'extract_text_FS',
+    	lang: await LanguageSelected()
+	}
+
+	function sendMessageAsync() {
+        return new Promise(resolve => {
+            browser.runtime.sendMessage(REQUEST, response => {
+                resolve(response);
+            });
+        });
+    }
+
+    await sendMessageAsync();
+
+}
 
 if(window.location.pathname === '/popup/popup.html'){
 	document.getElementById('capt').addEventListener("click",Capture)
@@ -267,10 +329,18 @@ if(window.location.pathname === '/popup/popup.html'){
 	document.getElementById('reset_text').addEventListener("click", ResetText)
 	document.getElementById('hide_text').addEventListener("click", HideText)
 
-	document.getElementById('ask_squared_image').addEventListener("click", AskForSquaredImage)
 
 	document.getElementById('switcher').addEventListener("click", Switcher);
-	document.getElementById('start_drawing').addEventListener("click", StartDrawing)
+
+	//free selection mode
+
+	document.getElementById('start_drawing').addEventListener("click", StartDrawing);
+	document.getElementById('ask_squared_image').addEventListener("click", AskForSquaredImage)
+
+	document.getElementById('reset_free_selection').addEventListener("click", ResetFreeSelection);
+	document.getElementById('clean_screen_FS').addEventListener("click", CleanScreenFS);
+	document.getElementById('extract_text_FS').addEventListener("click", TextExtractorFS);
+	document.getElementById('ask_FS_text').addEventListener("click", askText);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////

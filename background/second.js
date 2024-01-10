@@ -112,7 +112,7 @@ const ReplaceNumberText = async (text_array) => {
 	})
 }
 
-function CleanText (TextObject) {
+const CleanText = (TextObject) => {
 
 	TextObject.cleaned_text = TextObject.content.split(" ");
 
@@ -139,7 +139,7 @@ function CleanText (TextObject) {
 	main();
 }
 
-function InfoLogger (info, TextObject){
+const InfoLogger = (info, TextObject) => {
 
 	if(info.status == 'recognizing text'){
 		if(ProgressObject.progress == 0){
@@ -155,37 +155,36 @@ function InfoLogger (info, TextObject){
 	}
 }
 
-async function TextExtractor(myURI, TextObject) {
+const TextExtractor = (myURI, OBJ) =>  {
 
 	const scriptTesseract = document.createElement('script')
 	scriptTesseract.src = 'https://cdn.jsdelivr.net/npm/tesseract.js';
 	document.head.appendChild(scriptTesseract);
 
-	if(TextObject.lang == 'English'){
-		TextObject.lang = 'eng'
-	} else if (TextObject.lang == 'Japanese'){
-		TextObject.lang = 'jap'
-	} else if (TextObject.lang == 'German'){
-		TextObject.lang ='ger'
+	if(OBJ.lang == 'English'){
+		OBJ.lang = 'eng'
+	} else if (OBJ.lang == 'Japanese'){
+		OBJ.lang = 'jpn'
+	} else if (OBJ.lang == 'German'){
+		OBJ.lang ='ger'
 	}
 
 	scriptTesseract.onload = function () {
 
 		Tesseract.recognize(
 			myURI, 
-			TextObject.lang,
+			OBJ.lang,
 			{ 	
-				logger: info => InfoLogger(info, TextObject),
+				logger: info => InfoLogger(info, OBJ),
 				tessedit_char_blacklist: '@#$%^&*', 
 			} 
 		).then(({ data: { text } }) => {
 
-			if( typeof text == 'string'){
-				TextObject.content = text
+			if(typeof text == 'string'){
+				OBJ.content = text
 			}
 
          });
-
 	}
 }
 
