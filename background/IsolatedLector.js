@@ -44,7 +44,6 @@ const CutTheImage = () => {
 
         console.log(SquareDimension);
 
-
         const width   = SquareDimension.posXend - SquareDimension.posXstart;
         const height  = SquareDimension.posYend - SquareDimension.posYstart;
 

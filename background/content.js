@@ -81,6 +81,10 @@ const CreateOverlay = () => {
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
   overlay.style.zIndex = '999';
 
+  overlay.addEventListener('mousedown', MouseDownHandler);
+  overlay.addEventListener('mouseup', MouseUpHandler);
+  overlay.addEventListener('mousemove', DrawRectangle);
+
   document.body.appendChild(overlay);
 }
 
@@ -101,8 +105,8 @@ const CreateRectangle = () => {
 
 }
 
-document.addEventListener('mousedown', MouseDownHandler);
-document.addEventListener('mouseup', MouseUpHandler);
-document.addEventListener('mousemove', DrawRectangle);
-
 CreateOverlay();
+
+
+
+

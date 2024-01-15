@@ -182,6 +182,7 @@ const TextExtractor = (myURI, OBJ) =>  {
 
 			if(typeof text == 'string'){
 				OBJ.content = text
+				console.log(text)
 			}
 
          });

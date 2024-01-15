@@ -15,10 +15,10 @@
   
   "browser_action": {
     "default_icon": "icons/border-48.png",
-    "default_title": "Go!",
+    "default_title": "Language Worker",
     "default_popup":"popup/popup.html"
   },
-  
+
   "background": {
    "scripts": [
       "background/index.js",

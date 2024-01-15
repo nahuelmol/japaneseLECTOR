@@ -1,4 +1,6 @@
 
+var FirstTimeWindow = true;
+
 var TextObject = {
   content:'empty',
   lang:'default',
@@ -104,17 +106,46 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'ask_squared_image'){
         
-        sendResponse(ResourceStractedObject);
+        var response = {
+          resource:ResourceStractedObject,
+          createFloat:true
+        }
+
+        
+        browser.tabs.executeScript({file:'background/floatscript.js'})
+          .then(() => {
+            console.log('floatscript.js injected successfully')
+          })
+          .catch(err  => console.log(err));
+
+        browser.tabs.insertCSS({file:'style/index.css'})
+          .then(function () {
+            console.log('CSS file injected successfully');
+          })
+          .catch(err => console.log(err));
+        
+        sendResponse(response);
 
       } else if(data.type == 'activate_draw'){
 
         var resp = ExecuteScript()
           .then(() => {
-            console.log('content.js injected successfully');
+
+            browser.tabs.executeScript({file:'background/floatscript.js'})
+              .then(() => {
+                console.log('floatscript.js injected successfully')
+              })
+              .catch(err  => console.log(err));
+
+            browser.tabs.insertCSS({file:'style/index.css'})
+              .then(function () {
+                console.log('CSS file injected successfully');
+              })
+              .catch(err => console.log(err));
+              
             return { msg: 'loading content' };
           })
           .catch((error) => {
-            console.error('Error injecting content script:', error);
             return { msg: 'error loading content' };
           });
 
@@ -122,8 +153,8 @@ browser.runtime.onMessage.addListener(
           
       } else if(data.type == 'reset_free_selection'){
 
-        ResourceStractedObject.uri = 'empty';
-        ResourceStractedObject.uriEdited = 'empty';
+        TextObjectFS.content = 'empty';
+        TextObjectFS.progress = 0;
 
         sendResponse({ msg:'reseting the free selection'})
 
@@ -134,9 +165,12 @@ browser.runtime.onMessage.addListener(
 
       } else if(data.type == 'ask_FStext'){
         sendResponse(TextObjectFS)
-      } else {
+
+      }  else {
         sendResponse('there is not a message to process')
       }
 });
+
+
 
 console.log('Hi from the background, working...')

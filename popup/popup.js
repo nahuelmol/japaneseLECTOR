@@ -141,7 +141,7 @@ function AskCapture(){
 			var emp_state	= document.createElement("p")
 			emp_state.id 	= "emp";
 			
-			res.aṕpendChild(emp_state);
+			res.appendChild(emp_state);
 			
 			emp_state.innerHTML = "the uri is empty, literally";
 
@@ -255,31 +255,6 @@ const StartDrawing = async () => {
 	})
 }
 
-function AskForSquaredImage(){
-
-	var REQUEST = { type: 'ask_squared_image'}
-
-	browser.runtime.sendMessage(REQUEST)
-		.then(resource => {
-
-			if((resource.uriEdited !== 'empty') && (resource.uriEdited !== undefined)){
-
-				ImageDeleter('img_squared2');
-				ImageDeleter('error_capture_FS');
-				
-				ImageCreator('img_squared2', 'stract_section', resource.uriEdited);
-
-			}else if(resource.uriEdited == 'empty'){
-
-				ImageDeleter('img_squared2');
-				ImageDeleter('error_capture_FS');
-				
-				ImageCreator('error_capture_FS', 'stract_section', 'small.jpg');
-			}
-		})
-}
-
-
 
 const ResetFreeSelection = () => {
 	var REQUEST = { type: 'reset_free_selection'}
@@ -335,7 +310,6 @@ if(window.location.pathname === '/popup/popup.html'){
 	//free selection mode
 
 	document.getElementById('start_drawing').addEventListener("click", StartDrawing);
-	document.getElementById('ask_squared_image').addEventListener("click", AskForSquaredImage)
 
 	document.getElementById('reset_free_selection').addEventListener("click", ResetFreeSelection);
 	document.getElementById('clean_screen_FS').addEventListener("click", CleanScreenFS);
@@ -344,6 +318,3 @@ if(window.location.pathname === '/popup/popup.html'){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
