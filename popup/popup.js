@@ -17,9 +17,13 @@ function updateProgress() {
 	arrayData.then(response => {
 		var numprogress = response.progress.toFixed(2); 
 		if(MODE.on == 'normal'){
-			document.getElementById('progress').innerHTML = numprogress;
+			if(document.getElementById('progress')){
+				document.getElementById('progress').innerHTML = numprogress;
+			}
 		} else if(MODE.on == 'FS'){
-			document.getElementById('FSprogress').innerHTML = numprogress;
+			if(document.getElementById('FSprogress')){
+				document.getElementById('FSprogress').innerHTML = numprogress;
+			}
 		}
 	})
 
@@ -27,9 +31,6 @@ function updateProgress() {
 
 setInterval(updateProgress, 500)
 
-const SetTextFromBackground = (imageid, objeto) => {
-	
-}
 
 function askText(){
 	var REQUEST = { type:'ask_text'};
@@ -122,22 +123,18 @@ const ImageCreator = (imageid, parentid, uri) => {
 }
 
 
-
 function AskCapture(){
-
 	var REQUEST = { type: 'askURI'}
 	
 	var arrayData = browser.runtime.sendMessage(REQUEST);
 	arrayData.then(resource => {
 	   
 	   	if(resource.uri !== undefined){
-
 	   		ImageCreator('img_result', 'img', resource.uri)
 
 	   	}else if(resource.uri == 'empty'){
 			
 			var res = document.getElementById("result")
-			
 			var emp_state	= document.createElement("p")
 			emp_state.id 	= "emp";
 			
@@ -146,30 +143,22 @@ function AskCapture(){
 			emp_state.innerHTML = "the uri is empty, literally";
 
 		}else if (resource.uri == undefined){
-			var img = new Image()
-			img.src = 'small.jpg'
-			img.style.width = '100%';
-			img.style.height = 'auto';
-			img.id = 'error_capture'
-
-
+			
+			ImageCreator('error_capture', 'img', undefined);
+		
 			para = document.createElement('p')
 			para.textContent = 'please, capture is needed';
 			para.classList.add("text-danger")
 			para.id = 'danger-capture'
 			document.getElementById('img').appendChild(para)
 
-			document.getElementById('img').appendChild(img)
-			console.log('theres not URI')
 		}
 	})
 }
 
 function CleanScreen () {
-
 	ImageDeleter('img_result')
 	ImageDeleter('error_capture')
-
 }
 
 function Capture(){
@@ -224,7 +213,7 @@ function ResetText (){
 
 const Switcher = async () => {
 	var div1 = document.getElementById("normal");
-	var div2 = document.getElementById("specialized");
+	var div2 = document.getElementById("freestyle");
 
 	if (div1.classList.contains("hidden")) {
         // show div1 and hide div2
@@ -261,11 +250,8 @@ const ResetFreeSelection = () => {
 
 	browser.runtime.sendMessage(REQUEST)
 		.then(response => {
-
 			console.log(response.msg)
-
 		})
-
 }
 
 const CleanScreenFS = () => {
@@ -275,20 +261,17 @@ const CleanScreenFS = () => {
 
 const TextExtractorFS = async () => {
 
-	var REQUEST = { 
-    	type: 'extract_text_FS',
-    	lang: await LanguageSelected()
-	}
+	var REQUEST = { type: 'extract_text_FS', lang: await LanguageSelected() }
 
 	function sendMessageAsync() {
-        return new Promise(resolve => {
-            browser.runtime.sendMessage(REQUEST, response => {
-                resolve(response);
-            });
-        });
-    }
+        	return new Promise(resolve => {
+            		browser.runtime.sendMessage(REQUEST, response => {
+                		resolve(response);
+            		});
+        	});
+    	}
 
-    await sendMessageAsync();
+    	await sendMessageAsync();
 
 }
 
@@ -310,11 +293,6 @@ if(window.location.pathname === '/popup/popup.html'){
 	//free selection mode
 
 	document.getElementById('start_drawing').addEventListener("click", StartDrawing);
-
 	document.getElementById('reset_free_selection').addEventListener("click", ResetFreeSelection);
-	document.getElementById('clean_screen_FS').addEventListener("click", CleanScreenFS);
-	document.getElementById('extract_text_FS').addEventListener("click", TextExtractorFS);
-	document.getElementById('ask_FS_text').addEventListener("click", askText);
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////

@@ -67,7 +67,64 @@ async function DeleteFloatWindow () {
 
     return true;
 }
+async function LanguagesAvailables() {
+	var label1 = document.createElement('label');
+	var label2 = document.createElement('label');
+	var label3 = document.createElement('label');
+	
+	var input1 = document.createElement('input1');
+	var input2 = document.createElement('input2');
+	var input3 = document.createElement('input3');
 
+	label1.id = 'l1';
+	label1.setAttribute('for', 'english') ;	
+	
+	label2.id = 'l2';
+	label2.setAttribute('for', 'japanese');
+
+	label3.id = 'l3';
+	label3.setAttribute('for', 'german');
+	
+	input1.setAttribute('type', 'checkbox');
+	input1.id = "english";
+	input1.setAttribute('name', 'FSCheckbox');
+	input1.setAttribute('value', 'Japanese');
+
+	input2.setAttribute('type', 'checkbox');
+	input2.id = "japanese";
+	input2.setAttribute('name', 'FSCheckbox');
+	input2.setAttribute('value', 'Japanese');
+
+	input3.setAttribute('type','checkbox');
+	input3.id = "german";
+	input3.setAttribute('name','FSCheckbox');
+	input3.setAttribute('value', 'German');
+
+	var languages = document.createElement('div');
+	languages.id = 'langs';
+
+	languages.style.display = "block";
+    	languages.style.position = "fixed";
+    	languages.style.bottom = "430px";
+    	languages.style.right = "10px";
+    	languages.style.background = "#fff";
+    	languages.style.border = "1px solid #000";
+    	languages.style.zIndex = "9999";
+
+    	languages.style.width = '150px';
+    	languages.style.height = '60px';
+
+	languages.appendChild(label1);
+	languages.appendChild(input1);
+
+	languages.appendChild(label2);
+	languages.appendChild(input2);
+
+	languages.appendChild(label3);
+	languages.appendChild(input3);
+
+	document.body.appendChild(languages);
+}
 async function CreateFloatButtonsPlace () {
 
     var TextAndButtons = document.createElement('div');
@@ -89,7 +146,7 @@ async function CreateFloatButtonsPlace () {
 
     TextAndButtons.style.display = "block";
     TextAndButtons.style.position = "fixed";
-    TextAndButtons.style.bottom = "300px";
+    TextAndButtons.style.bottom = "265px";
     TextAndButtons.style.right = "10px";
     TextAndButtons.style.background = "#fff";
     TextAndButtons.style.border = "1px solid #000";
@@ -129,31 +186,38 @@ async function CreateFloatWindow () {
 
     hiddenDiv.style.display = "block";
     hiddenDiv.style.position = "fixed";
-    hiddenDiv.style.bottom = "40px";
+    hiddenDiv.style.bottom = "25px";
     hiddenDiv.style.right = "10px";
     hiddenDiv.style.background = "#fff";
     hiddenDiv.style.border = "1px solid #000";
     hiddenDiv.style.zIndex = "9999";
 
     hiddenDiv.style.width = '150px';
-    hiddenDiv.style.height = '250px';
+    hiddenDiv.style.height = '225px';
 
     document.body.appendChild(hiddenDiv);
 
 }
 
 DeleteFloatWindow()
-    .then(result => {
-        if(result){
-            CreateFloatWindow();
-        }
-    })
-    .then(() => {
-        CreateFloatButtonsPlace()
-    })
-    .catch(err => {
-        console.log(err)
-    })
+    	.then(result => {
+        	if(result){
+            		CreateFloatWindow();
+        	}
+    	})
+    	.then(() => {
+        	CreateFloatButtonsPlace()
+    	})
+	.then(() => {
+		try{
+			LanguagesAvailables()
+		}catch(err) {
+			console.log(err)
+		}
+	})
+    	.catch(err => {
+        	console.log(err)
+   	})
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
