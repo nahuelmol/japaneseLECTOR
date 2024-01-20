@@ -1,3 +1,22 @@
+function LanguageSelected () {
+	var boxes = document.getElementsByName('FSCheckbox');
+	var checkedboxes = Array.from(boxes).filter(checkbox => checkbox.checked);
+
+	if (checkedboxes.length > 0) {
+		if (checkedboxes.length == 1){
+			var language = checkedboxes[0].value;
+			console.log('the language is: '+language)
+			return language;
+
+		} else {
+			console.log('just one language should be selected')
+		}
+	}else {
+		console.log('please, select a language')
+	}
+}
+
+
 function ImageCreator (imageid, parentid, uri) {
 
     IMG = new Image()
@@ -35,8 +54,6 @@ const RefreshImage = async () => {
                 ElementDeleter('imageid');
                 ElementDeleter('error_capture');
 
-                console.log('is empty')
-                
                 ImageCreator('error_capture', 'image_displayer', 'small.jpg');
             }
         })
@@ -50,8 +67,8 @@ const RefreshImage = async () => {
 
 async function ExtractText() {
 
-    var REQUEST = { type: 'extract_text_FS',
-        			lang: 'English' }
+    var REQUEST = { 	type: 'extract_text_FS',
+        		lang: await LanguageSelected() }
 
     browser.runtime.sendMessage(REQUEST);
     
@@ -65,6 +82,15 @@ async function DeleteFloatWindow () {
         element.parentNode.removeChild(element)
     }
 
+	if(document.getElementById('topwindowid')){
+		var ele = document.getElementById('topwindowid');
+		ele.parentNode.removeChild(ele);
+	}
+
+	if(document.getElementById('textandbuttonsid')){
+		var ele = document.getElementById('textandbuttonsid');
+		ele.parentNode.removeChild(ele);
+	}
     return true;
 }
 async function LanguagesAvailables() {
@@ -72,58 +98,75 @@ async function LanguagesAvailables() {
 	var label2 = document.createElement('label');
 	var label3 = document.createElement('label');
 	
-	var input1 = document.createElement('input1');
-	var input2 = document.createElement('input2');
-	var input3 = document.createElement('input3');
+	var input1 = document.createElement('input');
+	var input2 = document.createElement('input');
+	var input3 = document.createElement('input');
+	
+	var br1 = document.createElement('br');
+	var br2 = document.createElement('br');
+	var br3 = document.createElement('br');
 
 	label1.id = 'l1';
 	label1.setAttribute('for', 'english') ;	
-	
+	label1.textContent = 'English';
+
 	label2.id = 'l2';
 	label2.setAttribute('for', 'japanese');
+	label2.textContent = 'Japanese';
 
 	label3.id = 'l3';
 	label3.setAttribute('for', 'german');
+	label3.textContent = 'German';
 	
 	input1.setAttribute('type', 'checkbox');
 	input1.id = "english";
 	input1.setAttribute('name', 'FSCheckbox');
-	input1.setAttribute('value', 'Japanese');
+	input1.setAttribute('value', 'English');
+	input1.classList.add('floatbox');	
 
 	input2.setAttribute('type', 'checkbox');
 	input2.id = "japanese";
 	input2.setAttribute('name', 'FSCheckbox');
 	input2.setAttribute('value', 'Japanese');
+	input2.classList.add('floatbox');
 
 	input3.setAttribute('type','checkbox');
 	input3.id = "german";
 	input3.setAttribute('name','FSCheckbox');
 	input3.setAttribute('value', 'German');
+	input3.classList.add('floatbox');
 
 	var languages = document.createElement('div');
 	languages.id = 'langs';
+	
+	var Topwindow = document.createElement('div');
+	Topwindow.id = 'topwindowid';
 
-	languages.style.display = "block";
-    	languages.style.position = "fixed";
-    	languages.style.bottom = "430px";
-    	languages.style.right = "10px";
-    	languages.style.background = "#fff";
-    	languages.style.border = "1px solid #000";
-    	languages.style.zIndex = "9999";
+	Topwindow.style.display = "block";
+    	Topwindow.style.position = "fixed";
+    	Topwindow.style.bottom = "430px";
+    	Topwindow.style.right = "10px";
+    	Topwindow.style.background = "#fff";
+    	Topwindow.style.border = "1px solid #000";
+    	Topwindow.style.zIndex = "9999";
 
-    	languages.style.width = '150px';
-    	languages.style.height = '60px';
+    	Topwindow.style.width = '150px';
+    	Topwindow.style.height = '60px';
 
 	languages.appendChild(label1);
 	languages.appendChild(input1);
+	languages.appendChild(br1);
 
 	languages.appendChild(label2);
 	languages.appendChild(input2);
+	languages.appendChild(br2);
 
 	languages.appendChild(label3);
 	languages.appendChild(input3);
+	languages.appendChild(br3);
 
-	document.body.appendChild(languages);
+	Topwindow.appendChild(languages);
+	document.body.appendChild(Topwindow);
 }
 async function CreateFloatButtonsPlace () {
 

@@ -26,47 +26,42 @@ function updateProgress() {
 			}
 		}
 	})
-
 }
 
 setInterval(updateProgress, 500)
 
-
-function askText(){
-	var REQUEST = { type:'ask_text'};
-
-	if(MODE.on == 'FS'){
-		REQUEST.type ='ask_FStext';
-		MODE.TextResult = 'FS_text_result';
-		MODE.TextContainer = 'FS_texto_container';
+async function CreatePragraph(id, parentid, content){
+	if(document.getElementById(id)){
+		var paragraph = document.getElementById(id);
+		paragraph.innerHTML = content;
+	} else {
+		var paragraph = document.createElement(id);
+		paragraph.textContent = content;
+		paragraph.classList.add('br-secondary');
+		paragraph.id = id;
+		document.getElementById(parentid).appendChild(paragraph)
+		
 	}
-
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(objeto => {
-		var idiom = ''
-
-		if(document.getElementById(MODE.TextResult)){
-			document.getElementById(MODE.TextResult).innerHTML = objeto.content;
-		} else {
-			paragraph = document.createElement('p')
-			paragraph.textContent = objeto.content;
-			paragraph.classList.add("bg-secondary")
-			paragraph.id = MODE.TextResult;
-			document.getElementById(MODE.TextContainer).appendChild(paragraph);
-		}
-
-		if(objeto.lang == 'eng'){
-			idiom = 'English'
-		} else if (objeto.lang == 'jap'){
-			idiom = 'Japanese'
-		} else if (objeto.lang == 'ger'){
-			idiom ='German'
-		}
-	})
 }
 
-function LanguageSelected () {
-	var boxes = document.getElementsByName('FSCheckbox');
+async function AskText(){
+	var REQUEST = { type:'ask_text'};
+
+	browser.runtime.sendMessage(REQUEST)
+		.then(TextObject => {
+
+			if(TextObject.content == 'empty'){
+				console.log('askin text');
+				return AskText();
+			} else {
+				CreatePragraph(MODE.TextResult,MODE.TextContainer,TextObject.content);
+			}
+		})
+
+}
+
+function LanguageSelected (cbox_groupname) {
+	var boxes = document.getElementsByName(cbox_groupname);
 	var checkedboxes = Array.from(boxes).filter(checkbox => checkbox.checked);
 
 	if (checkedboxes.length > 0) {
@@ -85,20 +80,22 @@ function LanguageSelected () {
 
 async function Extractor(){
     
-    var REQUEST = { 
-    	type: 'extract_text',
-    	lang: await LanguageSelected()
+    	var REQUEST = { 
+    		type: 'extract_text',
+    		lang: await LanguageSelected('normal_cbox')
 		}
 
 	function sendMessageAsync() {
-        return new Promise(resolve => {
-            browser.runtime.sendMessage(REQUEST, response => {
-                resolve(response);
-            });
-        });
-    }
+	        return new Promise(resolve => {
+        	    browser.runtime.sendMessage(REQUEST, response => {
+                	resolve(response);
+            		});
+        	});
+    	}
 
-    await sendMessageAsync();
+	await sendMessageAsync();
+
+	AskText();	
 }
 
 const ImageDeleter = (imageid) => {
@@ -123,35 +120,55 @@ const ImageCreator = (imageid, parentid, uri) => {
 }
 
 
-function AskCapture(){
+async function AskCapture(){
 	var REQUEST = { type: 'askURI'}
 	
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(resource => {
+	browser.runtime.sendMessage(REQUEST)
+		.then(resource => {
 	   
-	   	if(resource.uri !== undefined){
-	   		ImageCreator('img_result', 'img', resource.uri)
-
-	   	}else if(resource.uri == 'empty'){
-			
-			var res = document.getElementById("result")
-			var emp_state	= document.createElement("p")
-			emp_state.id 	= "emp";
-			
-			res.appendChild(emp_state);
-			
-			emp_state.innerHTML = "the uri is empty, literally";
-
-		}else if (resource.uri == undefined){
-			
-			ImageCreator('error_capture', 'img', undefined);
+	   	if(resource.uri == 'empty') {
 		
-			para = document.createElement('p')
-			para.textContent = 'please, capture is needed';
-			para.classList.add("text-danger")
-			para.id = 'danger-capture'
-			document.getElementById('img').appendChild(para)
+			if(document.getElementById('imageresult')){
+				var texto = document.getElementById('imageresult');
+				texto.innerHTML = ' is empty' ;
+			} else {
+				var res = document.getElementById("result")
+				var text_result	= document.createElement("p")
+				text_result.id 	= "imageresult";
+			
+				res.appendChild(text_result);
+				text_result.innerHTM = "empty";
+			}
+			console.log('askin');
+			return AskCapture();
+		}else if (resource.uri == undefined){
+			ImageDeleter('error_capture');	
+			ImageCreator('error_capture', 'img', undefined);
+			
+			if(document.getElementById('danger-capture')){
+				var warn = document.getElementById('danger-capture')
+				warn.innerHTML = 'please, capture is needed' ;
+			} else {
+				para = document.createElement('p')
+				para.textContent = 'please, capture is needed';
+				para.classList.add("text-danger")
+				para.id = 'danger-capture'
+				document.getElementById('img').appendChild(para)
+				return AskCapture();
+			
+			}
+		} else {
+					
+			ImageDeleter('error_capture');
+			ImageDeleter('img_result');
+			ImageCreator('img_result', 'img', resource.uri);
 
+			if(document.getElementById('imageresult')){
+				var result = document.getElementById('imageresult');
+				result.parentNode.removeChild(result);
+			} 
+
+	
 		}
 	})
 }
@@ -162,6 +179,7 @@ function CleanScreen () {
 }
 
 function Capture(){
+	document.getElementById('extractor').disabled = false;
 	var REQUEST = { type: 'capture' }
 	
 	if(document.getElementById('danger-capture')){
@@ -169,11 +187,14 @@ function Capture(){
 		elemento.parentNode.removeChild(elemento)
 	}
 
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-	arrayData.then(response => {
-	   console.log('msg from back: ', response.msg)
-	})
-
+	browser.runtime.sendMessage(REQUEST)
+		.then(response => {
+	   		console.log('msg from back: ', response.msg)
+		})
+		.then(() => {
+			AskCapture()
+		})
+		.catch(err => console.log(err));
 } 
 
 function CleanCapture(){
@@ -181,20 +202,13 @@ function CleanCapture(){
 		type:'clean_capture',
 	}
 
-	var arrayData = browser.runtime.sendMessage(REQUEST);
-
-	arrayData.then(response => {
-		console.log('cleaning the capture', response.msg)
-	})
-
-}
-
-function HideText (){
-
-	if(document.getElementById('text_result')){
-		elemento = document.getElementById('text_result')
-		elemento.parentNode.removeChild(elemento)
-	}
+	browser.runtime.sendMessage(REQUEST)
+		.then(response => {
+			console.log('cleaning the capture', response.msg)
+		})
+		.catch(err => console.log(err))
+	
+	CleanScreen();
 }
 
 function ResetText (){
@@ -204,7 +218,6 @@ function ResetText (){
 	}
 
 	var arrayData = browser.runtime.sendMessage(REQUEST);
-
 	arrayData.then(response => {
 		console.log('reseted: ', response.msg)
 	})
@@ -276,23 +289,19 @@ const TextExtractorFS = async () => {
 }
 
 if(window.location.pathname === '/popup/popup.html'){
-	document.getElementById('capt').addEventListener("click",Capture)
+	document.getElementById('capt').addEventListener("click", Capture)
+	document.getElementById('extractor').addEventListener("click", Extractor)
 
-	document.getElementById('ask').addEventListener("click", AskCapture)
-	document.getElementById('clean_screen').addEventListener("click", CleanScreen)
+
 	document.getElementById('clean_capture').addEventListener("click", CleanCapture)
 
-	document.getElementById('extractor').addEventListener("click", Extractor)
-	document.getElementById('ask_text').addEventListener("click", askText)
 	document.getElementById('reset_text').addEventListener("click", ResetText)
-	document.getElementById('hide_text').addEventListener("click", HideText)
-
-
 	document.getElementById('switcher').addEventListener("click", Switcher);
 
 	//free selection mode
 
 	document.getElementById('start_drawing').addEventListener("click", StartDrawing);
 	document.getElementById('reset_free_selection').addEventListener("click", ResetFreeSelection);
+	document.getElementById('extractor').disabled = true;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////

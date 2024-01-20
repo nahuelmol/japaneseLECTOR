@@ -31,13 +31,12 @@
 	
 
 	<div id="normal">
-
+		<div id="result"></div>
 		<div id="maincontainer" class="container">
 		<button class="btn btn-sm btn-primary" id="extractor">Extract Text</button>
 		<div id="texto_container"></div>
-		<button class="btn btn-sm btn-success" id="ask_text">Ask text</button>
-		<button class="btn btn-sm btn-primary" id="hide_text">Hide text</button>
 		<button class="btn btn-sm btn-primary" id="reset_text">Reset</button>
+		<button class="btn btn-sm btn-primary" id="capt">Capture</button>
 		<div class="container">
 			<p class="fs-8">progress: <mark class="text-primary" id="progress"></mark>%</p>
 		</div>
@@ -45,35 +44,18 @@
 		</div>
 
 		<div class="container bg-secondary">
-			<p>Select the language</p>
 			<label for="english">English:</label>
-			<input type="checkbox" id="english" name="myCheckbox" value="English">
-		
+			<input type="checkbox" id="english" name="normal_cbox" value="English">
 			<label for="japanese">Japanese:</label>
-			<input type="checkbox" id="japanese" name="myCheckbox" value="Japanese">
-			<br>
+			<input type="checkbox" id="japanese" name="normal_cbox" value="Japanese">
 			<label for="german">German:</label>
-			<input type="checkbox" id="german" name="myCheckbox" value="German">
+			<input type="checkbox" id="german" name="normal_cbox" value="German">
 		</div>
 
 		<div class="container">
-  		<div class="row">
-    		<div class="col-sm-4">
-    		</div>
-    		<div class="col-sm-4">
-    			<button class="btn btn-sm btn-primary" id="clean_screen">Clean Screen</button>
     			<button class="btn btn-sm btn-primary" id="clean_capture">Clean Capture</button>
-    		</div>
-    		<div class="col-sm-4">
-				<button class="btn btn-sm btn-primary" id="capt">Capture</button>
-    			<button class="btn btn-sm btn-primary" id="ask">Ask capture</button>
-    		</div>
-  		</div>
 		</div>
-
 		<div id="img"></div>
-
-		
 		
 	</div>
 

@@ -19,8 +19,6 @@ var ResourceObject = {
   uri:'empty'
 }
 
-
-
 const onCaptured = imageUri => {
 	var img = decodeURIComponent(imageUri)
 
@@ -54,15 +52,9 @@ browser.runtime.onMessage.addListener(
   		} else if(data.type == 'clean_capture'){
 
   			ResourceObject.uri = undefined
-  			var response = { msg:'cleaning capture'}
-  			sendResponse(response)
+  			sendResponse({ msg:'cleaning capture'})
 
-  		} else if(data.type == 'clean_screen'){
-
-        var response = { msg: 'clean screen'}
-        sendResponse(response)
-
-      } else if(data.type == 'extract_text'){
+  		} else if(data.type == 'extract_text'){
 
         TextObject.lang = data.lang
         TextExtractor(ResourceObject.uri, TextObject)
@@ -71,7 +63,6 @@ browser.runtime.onMessage.addListener(
         
         CleanText(TextObject)
         sendResponse(TextObject)
-
 
       } else if(data.type == 'check_progress'){
 
@@ -110,7 +101,6 @@ browser.runtime.onMessage.addListener(
           resource:ResourceStractedObject,
           createFloat:true
         }
-
         
         browser.tabs.executeScript({file:'background/floatscript.js'})
           .then(() => {
