@@ -1,73 +1,111 @@
-#refresh_button_id {
-    border: none;
-    outline: none;
-    padding: 5px 5px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-#extract_text_button_id {
-	border: none;
-    outline: none;
-    padding: 5px 5px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
 #image_displayer {
-	margin: 4px 2px;
-	border-radius: 4px;
-}
+	margin: 0.5vh 0.25vh;
+	border-radius: 0.5vh;
 
-#topwindowid {
-	margin: 4px 2px;
-	border-radius: 4px;
+	display:block;
+	position:fixed;
+	background-color:#fff;
+	border:0.15vh solid #000;
+	z-index:9999;
+
 }
 
 #langs {
-	padding:5px 5px;
-	font-size:10px;	
+	margin:0;
+	width:100%;
+	height:100%;
 	color:black;
 }
 
 #textandbuttonsid{
-	margin: 4px 2px;
-	border-radius: 4px;
+	display:block;
+	position:fixed;
+	background-color:#fff;
+	z-index:9999;
+	margin: 0.5vh 0.25;
+	border-radius: 0.5vh;
 }
 
 #butonsplaceid {
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	display:flex;
+	width:100%;
+	margin:0;
+	height:30%;
+}
+
+#text_extracted {
+	margin:0;
+	height:70%;
+	width:100%;
 }
 
 #progress_translation {
-    color: #333; /* Set text color */
-    background-color: #f8f8f8; /* Set background color */
-    border: 1px solid #ddd; /* Add a border */
-    border-radius: 10px; /* Add border radius for rounded corners */
+    	margin:0;
+	color: #333;  
+    background-color: #f8f8f8;
+    height:20%;
 }
 
 #textid {
-    color: #333; /* Set text color */
-    background-color: #f8f8f8; /* Set background color */
-    border: 1px solid #ddd; /* Add a border */
-    border-radius: 10px; /* Add border radius for rounded corners */
+	margin:0;
+    color: #333; 
+    background-color: #f8f8f8; 
     width:100%;
-    height: 100%;
-    box-sizing: border-box;
+    height: 80%;
+}
+.buttons {
+	margin:0;
+	font-size:1.5vw;
+	border: none;
+    	outline: none;
+    	text-align: center;
+    	text-decoration: none;
+    	cursor: pointer;
+}
+
+.indiv {
+	margin:0;
+	width:100%;
+	height:100%;
 }
 
 .floatbox {
-	width:10px;
-	height:10px;
+	margin:0;
+	height:3vh;
+	width:3vw;
 }
+
+.langlabels {
+	margin:0;
+	height:100%;
+	width:100%;
+	font-size:2vw;
+}
+
+
+
+#inputsid {
+	display:flex;
+	flex-direction:column;
+	width:50%;
+	height:100%;
+}
+
+#labelsid {
+	display:flex;
+	flex-direction:column;
+	width:50%;
+	height:100%;
+}
+
+#topwindowid {
+	display:flex;
+	position:fixed;
+	margin: 0.5vh 0.25vh;/*4px 2px*/
+	border-radius: 0.5vh;/*4px*/
+	background-color:#fff;
+	border:0.15vh solid #000;/*1px*/
+	z-index:9999;
+}
+
+

@@ -36,12 +36,11 @@ const MouseDownHandler = (event) => {
 
   startPosition = { x:event.clientX, y:event.clientY };
 
-  var messageINFO = browser.runtime.sendMessage({
-    type: 'mouseDown',
-    position: startPosition
-  });
+  browser.runtime.sendMessage({ type: 'mouseDown', 
+	  position: startPosition })
+	.then()
+	.catch(err => console.log());
 
-  messageINFO.then(res => console.log(res))
 
   CreateRectangle();
 
@@ -59,13 +58,10 @@ const MouseUpHandler = (event) => {
 
   position = { x:event.clientX, y:event.clientY }
 
+  browser.runtime.sendMessage({ type: 'mouseUp', position, })
+	.then()
+	.catch(err => console.log(err));
 
-  var messageINFO = browser.runtime.sendMessage({
-    type: 'mouseUp',
-    position,
-  });
-
-  messageINFO.then(res => console.log(res))
 }
 
 const CreateOverlay = () => {
@@ -100,7 +96,6 @@ const CreateRectangle = () => {
 
   if(document.getElementById('overlay')){
     document.getElementById('overlay').appendChild(rectangle);
-    console.log('rectangle append')
   }
 
 }

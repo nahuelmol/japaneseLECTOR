@@ -198,6 +198,7 @@ function Capture(){
 } 
 
 function CleanCapture(){
+	document.getElementById('extractor').disabled = false;
 	var REQUEST = {
 		type:'clean_capture',
 	}

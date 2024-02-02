@@ -97,11 +97,24 @@ async function LanguagesAvailables() {
 	var label1 = document.createElement('label');
 	var label2 = document.createElement('label');
 	var label3 = document.createElement('label');
-	
+
+	var labels = document.createElement('div');
+	labels.id = 'labelsid';
+
 	var input1 = document.createElement('input');
 	var input2 = document.createElement('input');
 	var input3 = document.createElement('input');
 	
+	var inputdiv1 = document.createElement('div');
+	var inputdiv2 = document.createElement('div');
+	var inputdiv3 = document.createElement('div');
+	
+	inputdiv1.classList.add('indiv')
+	inputdiv2.classList.add('indiv')
+	inputdiv3.classList.add('indiv')
+
+	var inputs = document.createElement('div');
+	inputs.id = 'inputsid';
 	var br1 = document.createElement('br');
 	var br2 = document.createElement('br');
 	var br3 = document.createElement('br');
@@ -109,14 +122,17 @@ async function LanguagesAvailables() {
 	label1.id = 'l1';
 	label1.setAttribute('for', 'english') ;	
 	label1.textContent = 'English';
+	label1.classList.add('langlabels');
 
 	label2.id = 'l2';
 	label2.setAttribute('for', 'japanese');
 	label2.textContent = 'Japanese';
+	label2.classList.add('langlabels');
 
 	label3.id = 'l3';
 	label3.setAttribute('for', 'german');
 	label3.textContent = 'German';
+	label3.classList.add('langlabels');
 	
 	input1.setAttribute('type', 'checkbox');
 	input1.id = "english";
@@ -136,38 +152,36 @@ async function LanguagesAvailables() {
 	input3.setAttribute('value', 'German');
 	input3.classList.add('floatbox');
 
-	var languages = document.createElement('div');
-	languages.id = 'langs';
+	//var languages = document.createElement('div');
+	//languages.id = 'langs';
 	
 	var Topwindow = document.createElement('div');
 	Topwindow.id = 'topwindowid';
 
-	Topwindow.style.display = "block";
-    	Topwindow.style.position = "fixed";
-    	Topwindow.style.bottom = "430px";
-    	Topwindow.style.right = "10px";
-    	Topwindow.style.background = "#fff";
-    	Topwindow.style.border = "1px solid #000";
-    	Topwindow.style.zIndex = "9999";
+	Topwindow.style.width = window.innerWidth / 6 + 'px';
+	Topwindow.style.height = window.innerHeight / 7 + 'px';
+	Topwindow.style.top = window.innerHeight / 100 + 'px';
+	Topwindow.style.right = window.innerWidth / 90 + 'px';
+	
+	labels.appendChild(label1);
+	labels.appendChild(label2);
+	labels.appendChild(label3);
 
-    	Topwindow.style.width = '150px';
-    	Topwindow.style.height = '60px';
+	inputdiv1.appendChild(input1);
+	inputdiv2.appendChild(input2);
+	inputdiv3.appendChild(input3);
 
-	languages.appendChild(label1);
-	languages.appendChild(input1);
-	languages.appendChild(br1);
+	inputs.appendChild(inputdiv1);
+	inputs.appendChild(inputdiv2);
+	inputs.appendChild(inputdiv3);
 
-	languages.appendChild(label2);
-	languages.appendChild(input2);
-	languages.appendChild(br2);
+	//languages.appendChild(br1);
 
-	languages.appendChild(label3);
-	languages.appendChild(input3);
-	languages.appendChild(br3);
-
-	Topwindow.appendChild(languages);
+	Topwindow.appendChild(labels);
+	Topwindow.appendChild(inputs);
 	document.body.appendChild(Topwindow);
 }
+
 async function CreateFloatButtonsPlace () {
 
     var TextAndButtons = document.createElement('div');
@@ -187,23 +201,18 @@ async function CreateFloatButtonsPlace () {
     textplace.id = 'text_extracted';
     buttonsplace.id = 'butonsplaceid';
 
-    TextAndButtons.style.display = "block";
-    TextAndButtons.style.position = "fixed";
-    TextAndButtons.style.bottom = "265px";
-    TextAndButtons.style.right = "10px";
-    TextAndButtons.style.background = "#fff";
-    TextAndButtons.style.border = "1px solid #000";
-    TextAndButtons.style.zIndex = "9999";
+	TextAndButtons.style.right = window.innerWidth / 90 + 'px';
+	TextAndButtons.style.top = window.innerHeight / 6 + 'px';
+	TextAndButtons.style.width = window.innerWidth / 6 + 'px';
+	TextAndButtons.style.height = window.innerHeight / 5 + 'px';
+	
+    	refresh_button.innerHTML = "Refresh Image"; 
+	refresh_button.id = 'refreshid';
+	refresh_button.classList.add('buttons');
 
-    TextAndButtons.style.width = '150px';
-    TextAndButtons.style.height = '150px';
-
-    refresh_button.innerHTML = "Refresh Image"; 
-    refresh_button.id = "refresh_button_id"; 
-
-    extract_text_button.innerHTML = 'Extract Text';
-    extract_text_button.id = 'extract_text_button_id';
-
+    	extract_text_button.innerHTML = 'Extract Text';
+	extract_text_button.classList.add('buttons');
+	extract_text_button.id = 'extractid';
 
     refresh_button.addEventListener("click", RefreshImage);
     extract_text_button.addEventListener("click", ExtractText);
@@ -223,22 +232,16 @@ async function CreateFloatButtonsPlace () {
 
 async function CreateFloatWindow () {
 
-    var hiddenDiv = document.createElement('div');
-
-    hiddenDiv.id = 'image_displayer';
-
-    hiddenDiv.style.display = "block";
-    hiddenDiv.style.position = "fixed";
-    hiddenDiv.style.bottom = "25px";
-    hiddenDiv.style.right = "10px";
-    hiddenDiv.style.background = "#fff";
-    hiddenDiv.style.border = "1px solid #000";
-    hiddenDiv.style.zIndex = "9999";
-
-    hiddenDiv.style.width = '150px';
-    hiddenDiv.style.height = '225px';
-
-    document.body.appendChild(hiddenDiv);
+    	var hiddenDiv = document.createElement('div');
+	
+	hiddenDiv.style.bottom = window.innerWidth / 90 + 'px';
+	hiddenDiv.style.right = window.innerWidth / 90 + 'px';
+	hiddenDiv.style.height = window.innerHeight / 2 + 'px';
+	hiddenDiv.style.width = window.innerWidth / 6 + 'px';
+	
+    	hiddenDiv.id = 'image_displayer';
+	
+    	document.body.appendChild(hiddenDiv);
 
 }
 
@@ -296,3 +299,49 @@ async function CheckText (){
 
 }
 
+function UpdateFloats(){
+	const zoom_factor = window.innerWidth / window.outerWidth;
+	const fixed_container = document.getElementById('image_displayer');
+	
+	fixed_container.style.bottom = window.innerWidth / 90 + 'px';
+	fixed_container.style.right = window.innerWidth / 90 + 'px';
+	fixed_container.style.height = window.innerHeight / 2 + 'px';
+	fixed_container.style.width = window.innerWidth / 6 + 'px';
+	
+	const textandbuttons = document.getElementById('textandbuttonsid');
+	textandbuttons.style.right = window.innerWidth / 90 + 'px';
+	textandbuttons.style.top = window.innerHeight / 6 + 'px';
+	textandbuttons.style.width = window.innerWidth / 6 + 'px';
+	textandbuttons.style.height = window.innerHeight / 5 + 'px';
+	
+	const topwindow = document.getElementById('topwindowid');
+	topwindow.style.width = window.innerWidth / 6 + 'px';
+	topwindow.style.height = window.innerHeight / 7 + 'px';
+	topwindow.style.top = window.innerHeight / 100 + 'px';
+	topwindow.style.right = window.innerWidth / 90 + 'px';
+
+	const thewidth = document.getElementById('topwindowid').offsetWidth;
+	const theheight = document.getElementById('topwindowid').offsetHeight;
+
+	const buttonr = document.getElementById('refreshid');
+	const buttone = document.getElementById('extractid');
+
+	buttone.style.width = (thewidth * 48 / 100) + 'px';
+	buttonr.style.width = (thewidth * 48 / 100) + 'px';
+	
+	const inputse = document.getElementById('inputsid');
+	const labelse = document.getElementById('labelsid');
+	
+	inputse.style.width = (thewidth * 48 / 100) + 'px';
+	inputse.style.height = (theheight)+'px';
+
+	labelse.style.width = (thewidth * 48 / 100) + 'px';
+	labelse.style.height = (theheight)+'px';
+
+	const ele = document.getElementById('l1').offsetHeight;
+	const ele1 = document.getElementById('english').offsetHeight;
+}
+
+window.addEventListener('resize', UpdateFloats);
+
+UpdateFloats();
